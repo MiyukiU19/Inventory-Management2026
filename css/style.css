@@ -1,0 +1,47 @@
+/* メニュー全体のコンテナ */
+.menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 600px; /* 必要に応じて調整 */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 個別のメニューボタン */
+.menu-card {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* ホバー時のエフェクト */
+.menu-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* アイコン（画像）のサイズ調整 */
+.menu-card img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    margin-bottom: 16px;
+}
+
+/* メニューの文字（h4） */
+.menu-card h4 {
+    margin: 0;
+    font-size: 16px;
+    /* color: #2c3e50; */
+    font-weight: bold;
+}
