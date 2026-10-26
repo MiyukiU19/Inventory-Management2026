@@ -1,4 +1,4 @@
-/* メニュー全体のコンテナ */
+/* メニュー */
 .menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -18,16 +18,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-/* ホバー時のエフェクト */
-.menu-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* アイコン（画像）のサイズ調整 */
