@@ -1,23 +1,20 @@
 <?php require "config/database.php"; ?>
+<?php require "header.php"; ?>
 <table>
     <tr>
-        <th>識別番号</th>
         <th>シリアル</th>
         <th>製品</th>
+        <th></th>
     </tr>
     <?php
     $sql = $pdo -> query("
         select * from possess_mat as pm
         left join inventory as i
         on pm.stock_id = i.stock_id
-        order by pm.identification_id
     ");
 
     foreach($sql as $row){
         echo "<tr>";
-        echo "<td>";
-        echo $row['identification_id'];
-        echo "</td>";
         echo "<td>";
         echo $row['serial_id'];
         echo "</td>";
@@ -32,7 +29,13 @@
             echo "未登録";
             echo "</td>";
         }
+
+        echo "<td>";
+        echo '<button onclick="location.href=', "'mat-edit.php'", '">編集</button>';
+        echo "</td>";
         echo "</tr>";
     }
     ?>
 </table>
+
+<button onclick="location.href='mat-add.php'">登録</button>
