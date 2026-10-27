@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS user;
 -- ==========================================
 -- 2. テーブルの作成
 -- ==========================================
--- ユーザーテーブル (mail_adressを削除)
+-- ユーザーテーブル
 CREATE TABLE user (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     user_name VARCHAR(50) NOT NULL,
@@ -29,14 +29,14 @@ CREATE TABLE user (
 
 -- マット仕様テーブル
 CREATE TABLE mat_specification (
-    mat_id INT PRIMARY KEY,
+    mat_spec_id INT AUTO_INCREMENT PRIMARY KEY,
     load_capacity INT NOT NULL,
     measurement_unit INT NOT NULL
 );
 
 -- 在庫テーブル
 CREATE TABLE inventory (
-    stock_id INT PRIMARY KEY,
+    stock_id INT AUTO_INCREMENT PRIMARY KEY,
     stock_name VARCHAR(100) NOT NULL,
     amount INT NOT NULL,
     border_line INT NOT NULL,
@@ -44,18 +44,19 @@ CREATE TABLE inventory (
     img VARCHAR(255) NOT NULL
 );
 
--- 所有マットテーブル
+-- 所有マットテーブル (serial_idにUNIQUE制約を追加)
 CREATE TABLE possess_mat (
-    serial_id CHAR(12) PRIMARY KEY,
+    mat_id INT AUTO_INCREMENT PRIMARY KEY,
+    serial_id CHAR(12) NOT NULL UNIQUE,
     stock_id INT, -- NULLを許容
-    mat_id INT NOT NULL,
+    mat_spec_id INT NOT NULL,
     FOREIGN KEY (stock_id) REFERENCES inventory(stock_id),
-    FOREIGN KEY (mat_id) REFERENCES mat_specification(mat_id)
+    FOREIGN KEY (mat_spec_id) REFERENCES mat_specification(mat_spec_id)
 );
 
 -- 在庫履歴テーブル
 CREATE TABLE inventory_history (
-    history_id INT PRIMARY KEY,
+    history_id INT AUTO_INCREMENT PRIMARY KEY,
     stock_id INT NOT NULL,
     stock_name VARCHAR(100) NOT NULL,
     amount INT NOT NULL,
@@ -73,7 +74,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 3. テストデータの挿入
 -- ==========================================
 
--- 0. ユーザー (25件) ※メールアドレスを削除
+-- 0. ユーザー (25件)
 INSERT INTO user (user_id, user_name, password, authority) VALUES
 (NULL, '佐藤 健太', 'sato_ken01', TRUE),
 (NULL, '鈴木 さくら', 'suzuki_s99', FALSE),
@@ -102,7 +103,7 @@ INSERT INTO user (user_id, user_name, password, authority) VALUES
 (NULL, '阿部 健太郎', 'abe_ken33', TRUE);
 
 -- 1. マット仕様 (4件)
-INSERT INTO mat_specification (mat_id, load_capacity, measurement_unit) VALUES
+INSERT INTO mat_specification (mat_spec_id, load_capacity, measurement_unit) VALUES
 (1, 1000, 1), (2, 5000, 10), (3, 10000, 50), (4, 20000, 100);
 
 -- 2. 在庫 (30件)
@@ -139,17 +140,17 @@ INSERT INTO inventory (stock_id, stock_name, amount, border_line, weight, img) V
 (30, 'ウレタンゴムシート 3mm', 950, 25, 320.000, 'rubber_sheet.png');
 
 -- 3. 所有マット (30件)
-INSERT INTO possess_mat (serial_id, stock_id, mat_id) VALUES
-('W93847102934', 1, 1), ('W18475920384', 2, 2), ('W82736450192', 3, 1),
-('W39485710293', 4, 3), ('W58291037465', 5, 1), ('W10394857621', NULL, 1), 
-('W74839201847', 7, 2), ('W29384756102', 8, 1), ('W85746392018', 9, 1),
-('W19283746501', 10, 1), ('W47586920193', NULL, 1), ('W20394857162', 12, 2), 
-('W84756102938', 13, 1), ('W39485761029', 14, 2), ('W58473629102', 15, 1), 
-('W10293847561', 16, 1), ('W94857102938', NULL, 1), ('W28374650192', 18, 1), 
-('W57483920183', 19, 1), ('W19283746590', 20, 1), ('W48571920384', 21, 2), 
-('W37465019283', NULL, 2), ('W58694039281', 23, 3), ('W29384756109', 24, 2), 
-('W84756192038', 25, 1), ('W10293847569', NULL, 1), ('W39485710294', 27, 1), 
-('W58473629103', 28, 1), ('W93847102935', 29, 1), ('W18475920385', NULL, 1);
+INSERT INTO possess_mat (mat_id, serial_id, stock_id, mat_spec_id) VALUES
+(1, 'W93847102934', 1, 1), (2, 'W18475920384', 2, 2), (3, 'W82736450192', 3, 1),
+(4, 'W39485710293', 4, 3), (5, 'W58291037465', 5, 1), (6, 'W10394857621', NULL, 1), 
+(7, 'W74839201847', 7, 2), (8, 'W29384756102', 8, 1), (9, 'W85746392018', 9, 1),
+(10, 'W19283746501', 10, 1), (11, 'W47586920193', NULL, 1), (12, 'W20394857162', 12, 2), 
+(13, 'W84756102938', 13, 1), (14, 'W39485761029', 14, 2), (15, 'W58473629102', 15, 1), 
+(16, 'W10293847561', 16, 1), (17, 'W94857102938', NULL, 1), (18, 'W28374650192', 18, 1), 
+(19, 'W57483920183', 19, 1), (20, 'W19283746590', 20, 1), (21, 'W48571920384', 21, 2), 
+(22, 'W37465019283', NULL, 2), (23, 'W58694039281', 23, 3), (24, 'W29384756109', 24, 2), 
+(25, 'W84756192038', 25, 1), (26, 'W10293847569', NULL, 1), (27, 'W39485710294', 27, 1), 
+(28, 'W58473629103', 28, 1), (29, 'W93847102935', 29, 1), (30, 'W18475920385', NULL, 1);
 
 -- 4. 在庫履歴 (1000件)
 INSERT INTO inventory_history (history_id, stock_id, stock_name, amount, update_date, quantity, weight, max_weight)

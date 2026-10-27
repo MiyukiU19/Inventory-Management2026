@@ -1,5 +1,19 @@
 <?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php
+// マット追加ページから飛んできたとき
+if(!empty($_POST['action'])){
+    switch($_POST['action']){
+        case "add":
+            // var_dump($_POST);
+            $serial = $_POST['serial'];
+            $inventory = (empty($_POST['inventory'])) ? null : $_POST['inventory'];
+            $size = (int)$_POST['size'];
+            $sql = $pdo -> prepare("insert into possess_mat values (null, ?, ?, ?)");
+            $sql -> execute([$serial, $inventory, $size]);
+    }
+}
+?>
 <table>
     <tr>
         <th>シリアル</th>
