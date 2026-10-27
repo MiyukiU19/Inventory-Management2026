@@ -5,12 +5,21 @@
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case "add":
-            // var_dump($_POST);
             $serial = $_POST['serial'];
-            $inventory = (empty($_POST['inventory'])) ? null : $_POST['inventory'];
+            $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
             $size = (int)$_POST['size'];
             $sql = $pdo -> prepare("insert into possess_mat values (null, ?, ?, ?)");
             $sql -> execute([$serial, $inventory, $size]);
+            break;
+        case "edit":
+            $matId = (int)$_POST['id'];
+            $serial = $_POST['serial'];
+            $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
+            $size = (int)$_POST['size'];
+            $sql = $pdo -> prepare("update possess_mat set serial_id=?, stock_id=?, mat_spec_id=? where mat_id=?");
+            var_dump($matId, $serial, $inventory, $size);
+            $sql -> execute([$serial, $inventory, $size, $matId]);
+            break;
     }
 }
 ?>
@@ -28,15 +37,18 @@ if(!empty($_POST['action'])){
     ");
 
     foreach($sql as $row){
+        $serialId = $row['serial_id'];
+        $stockName = $row["stock_name"];
+        $matId = $row['mat_id'];
         echo "<tr>";
         echo "<td>";
-        echo $row['serial_id'];
+        echo $serialId;
         echo "</td>";
 
         // マットに製品が紐づけられているか
-        if(!empty($row["stock_name"])){
+        if(!empty($stockName)){
             echo "<td>";
-            echo $row['stock_name'];
+            echo $stockName;
             echo "</td>";
         } else {
             echo "<td class='mat-unlinked'>";
@@ -45,7 +57,7 @@ if(!empty($_POST['action'])){
         }
 
         echo "<td>";
-        echo '<button onclick="location.href=', "'mat-edit.php'", '">編集</button>';
+        echo '<button onclick="location.href=', "'mat-edit.php?id={$matId}'", '">編集</button>';
         echo "</td>";
         echo "</tr>";
     }
