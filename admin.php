@@ -13,7 +13,7 @@
     
     foreach($sql as $row){
         // 権限の数値（0 or 1）を文字列に変換
-        $authority_text = ($row['authority'] == 0) ? '管理者' : '作業者';
+        $authority_text = ($row['authority'] == 1) ? '管理者' : '作業者';
 
         echo "<tr>";
         echo "<td>";
