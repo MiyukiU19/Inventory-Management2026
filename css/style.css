@@ -7,7 +7,11 @@
     margin: 0 auto;
     padding: 20px;
 }
-
+.hd_h1{
+    text-align: center;
+    font-size:  40px;
+    margin: 20px;
+}
 /* 個別のメニューボタン */
 .menu-card {
     background-color: #ffffff;
@@ -36,6 +40,17 @@
     /* color: #2c3e50; */
     font-weight: bold;
 }
+
+/* メニューページ */
+
+.menu-icon {
+    font-size: 60px;
+    padding-bottom: 10px;
+    
+}
+
+
+
 /*
 =========================
 マット一覧ページ
