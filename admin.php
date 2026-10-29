@@ -16,7 +16,7 @@
     $sql = $pdo->query("SELECT * FROM user");
     
     foreach($sql as $row){
-        // 1が管理者、0が作業者
+        // 1が管理者、0が作業者に変換し代入
         $authority_text = ($row['authority'] == 1) ? '管理者' : '作業者';
 
         echo "<tr>";
@@ -27,7 +27,7 @@
         echo $row['user_name'];
         echo "</td>";
         echo "<td>";
-        echo "<a href='user-edit.php?id=" . $row['user_id'] . "'><button>編集</button></a>";
+        echo "<a href='user-edit.php?id=" . $row['user_id'] . "'><button>編集</button></a>"; // idを送って判別
         echo "</td>";
         echo "</tr>";
     }

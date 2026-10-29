@@ -4,25 +4,28 @@
 $error_message = "";
 $success_message = "";
 
-// 1. URLのパラメータ（?id=〜）からユーザーIDを取得
+// 1. admin.phpのURL（?id=〜）からユーザーIDを取得
 $user_id = $_GET['id'] ?? null;
 
+// idが取得できなかったらadminページへ追い返す
 if (empty($user_id)) {
-    // IDが指定されていない場合はユーザー一覧（admin.php）にリダイレクト
+    // admin.phpにリダイレクト
     header('Location: admin.php');
     exit();
 }
 
 // 2. 更新ボタン（POST）が押されたときの処理
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // 送られてきたデータをそれぞれ変数に代入
     $user_name = $_POST['user_name'] ?? '';
     $password = $_POST['password'] ?? '';
     $authority = $_POST['authority'] ?? '';
 
-    if (!empty($user_name) && !empty($password) && $authority !== '') {
+    if (!empty($user_name) && !empty($password) && $authority !== '') { //それぞれ空になってないか
         try {
             // データベースの情報を更新
             $sql = $pdo->prepare("UPDATE user SET user_name = ?, password = ?, authority = ? WHERE user_id = ?");
+            // 用意した?の部分に入力したものを当てはめて、データベースの情報を更新する
             $sql->execute([$user_name, $password, $authority, $user_id]);
 
             $success_message = "ユーザー情報を更新しました。";
@@ -36,16 +39,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 // 3. データベースから現在のユーザー情報を取得してフォームに初期表示する
 try {
+    // user_idが?の人の情報をすべて取得
     $sql = $pdo->prepare("SELECT * FROM user WHERE user_id = ?");
     $sql->execute([$user_id]);
+    // PHPで扱いやすい連想配列に変えて代入
     $user = $sql->fetch();
 
     if (!$user) {
-        // 該当するユーザーがいない場合
+        // 該当するユーザーがいない場合、admin画面に飛ばす
         header('Location: admin.php');
         exit();
     }
-} catch (Throwable $e) {
+} catch (Throwable $e) { // データベース接続失敗などのトラブルがあった場合
     echo "データ取得エラー: " . $e->getMessage();
     exit();
 }
