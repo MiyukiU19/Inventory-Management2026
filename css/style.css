@@ -36,3 +36,177 @@
     /* color: #2c3e50; */
     font-weight: bold;
 }
+/*
+=========================
+マット一覧ページ
+========================= */
+
+.page-container {
+width: min(100% - 32px, 1000px);
+margin: 50px auto 16px;
+}
+
+.hd{
+    display: flex;
+    gap: 350px;
+}
+
+.mat-list-page .hd {
+margin-bottom: 12px;
+text-align: center;
+}
+
+.mat-list-page .hd h1 {
+margin: 0;
+font-size: 26px;
+font-weight: 700;
+}
+
+.mat-list-card {
+padding: 24px;
+border-radius: 16px;
+overflow: hidden;
+}
+
+.mat-list-heading {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 16px;
+margin-bottom: 20px;
+}
+
+.mat-list-heading h2 {
+margin: 0;
+font-size: 18px;
+}
+
+.mat-list-count {
+color: var(--mu, #64748b);
+font-size: 14px;
+white-space: nowrap;
+}
+
+.mat-table-wrapper {
+width: 100%;
+overflow-x: auto;
+}
+
+.mat-table {
+width: 100%;
+border-collapse: collapse;
+text-align: left;
+}
+
+.mat-table th,
+.mat-table td {
+padding: 16px;
+border-bottom: 1px solid var(--bd, #e2e8f0);
+}
+
+.mat-table th {
+background: var(--bg, #f8fafc);
+color: var(--mu, #64748b);
+font-size: 13px;
+font-weight: 600;
+white-space: nowrap;
+}
+
+.mat-table td {
+color: var(--tx, #1e293b);
+font-size: 14px;
+}
+
+.mat-table tbody tr {
+background: var(--bg, #f8fafc);
+}
+
+.mat-action-column {
+width: 100px;
+text-align: center !important;
+white-space: nowrap;
+}
+
+.mat-edit-button {
+display: inline-block;
+padding: 7px 16px;
+border: 1px solid var(--bd, #e2e8f0);
+border-radius: 8px;
+color: var(--tx, #1e293b);
+text-decoration: none;
+font-size: 13px;
+cursor: pointer;
+}
+
+.mat-edit-button {
+background: var(--bg, #f1f5f9);
+}
+
+.mat-unlinked {
+display: inline-block;
+padding: 5px 10px;
+border-radius: 6px;
+background: #fff1f2;
+color: #be123c;
+font-size: 12px;
+font-weight: 600;
+}
+
+.mat-empty {
+padding: 32px 16px !important;
+color: var(--mu, #64748b) !important;
+text-align: center;
+}
+
+.mat-list-footer {
+display: flex;
+justify-content: flex-end;
+margin-top: 12px;
+}
+
+.mat-add-button {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+padding: 11px 20px;
+border-radius: 9px;
+text-decoration: none;
+font-weight: 600;
+}
+
+
+/* スマホ対応 */
+@media (max-width: 700px) {
+.page-container {
+width: calc(100% - 24px);
+margin: 20px auto;
+}
+
+.mat-list-card {
+    padding: 16px;
+}
+
+.mat-list-page .hd h1 {
+    font-size: 22px;
+}
+
+.mat-list-heading h2 {
+    font-size: 16px;
+}
+
+.mat-table th,
+.mat-table td {
+    padding: 12px 10px;
+}
+
+.mat-list-footer {
+    justify-content: stretch;
+}
+
+.mat-add-button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+}

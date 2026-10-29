@@ -23,45 +23,76 @@ if(!empty($_POST['action'])){
     }
 }
 ?>
-<table>
-    <tr>
-        <th>シリアル</th>
-        <th>製品</th>
-        <th></th>
-    </tr>
-    <?php
-    $sql = $pdo -> query("
-        select * from possess_mat as pm
-        left join inventory as i
-        on pm.stock_id = i.stock_id
-    ");
 
-    foreach($sql as $row){
-        $serialId = $row['serial_id'];
-        $stockName = $row["stock_name"];
-        $matId = $row['mat_id'];
-        echo "<tr>";
-        echo "<td>";
-        echo $serialId;
-        echo "</td>";
+<main class="page-container mat-list-page">
 
-        // マットに製品が紐づけられているか
-        if(!empty($stockName)){
-            echo "<td>";
-            echo $stockName;
-            echo "</td>";
-        } else {
-            echo "<td class='mat-unlinked'>";
-            echo "未登録";
-            echo "</td>";
-        }
+<div class="hd">
+    <button type="button" class="b mat-edit-button" style="margin-left:23px" onclick="history.back()">戻る</button>
+    <h1>マット一覧</h1>
+</div>
+<section class="card mat-list-card">
+            <div class="mat-list-footer">
+        <a class="b p mat-add-button" href="mat-add.php">
+            ＋ 登録
+        </a>
+    </div>
 
-        echo "<td>";
-        echo '<button onclick="location.href=', "'mat-edit.php?id={$matId}'", '">編集</button>';
-        echo "</td>";
-        echo "</tr>";
-    }
-    ?>
-</table>
+    <div class="mat-table-wrapper">
+        <table class="mat-table">
+            <thead>
+                <tr>
+                    <th>シリアル</th>
+                    <th>製品</th>
+                    <th class="mat-action-column"></th>
+                </tr>
+            </thead>
 
-<button onclick="location.href='mat-add.php'">登録</button>
+            <tbody>
+                <?php
+                $sql = $pdo->query("
+                    SELECT *
+                    FROM possess_mat AS pm
+                    LEFT JOIN inventory AS i
+                        ON pm.stock_id = i.stock_id
+                ");
+
+                foreach ($sql as $row) {
+                    $serialId = $row['serial_id'];
+                    $stockName = $row['stock_name'];
+                    $matId = (int)$row['mat_id'];
+                ?>
+                    <tr>
+                        <td>
+                            <?= htmlspecialchars((string)$serialId, ENT_QUOTES, 'UTF-8') ?>
+                        </td>
+
+                        <td>
+                            <?php if (!empty($stockName)) { ?>
+                                <?= htmlspecialchars((string)$stockName, ENT_QUOTES, 'UTF-8') ?>
+                            <?php } else { ?>
+                                <span class="mat-unlinked">未登録</span>
+                            <?php } ?>
+                        </td>
+
+                        <td class="mat-action-column">
+                            <a
+                                class="b mat-edit-button"
+                                href="mat-edit.php?id=<?= $matId ?>"
+                            >編集</a>
+                        </td>
+                    </tr>
+                <?php } ?>
+
+                <?php if ($sql->rowCount() === 0) { ?>
+                    <tr>
+                        <td colspan="3" class="mat-empty">
+                            マットが登録されていません。
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+
+    
+</section>
