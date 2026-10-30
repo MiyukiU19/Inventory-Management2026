@@ -253,7 +253,7 @@ margin: 20px auto;
 
 /* 戻るボタン */
 .mat-add-page .mat-edit-button {
-    background: transparent;
+    /* background: transparent; */
     border: none;
     color: #ffffff;
     font-size: 22px;
@@ -377,4 +377,126 @@ margin: 20px auto;
         font-size: 22px;
     }
 
+}
+/* =========================
+   ユーザー一覧ページ
+========================= */
+
+.user-list-page {
+    width: min(100% - 32px, 1000px);
+    margin: 50px auto 30px;
+}
+
+/* ヘッダー */
+.user-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.user-list-header h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.user-list-header .back-button {
+    position: absolute;
+    left: 0;
+}
+
+/* 一覧カード */
+.user-list-card {
+    padding: 24px;
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+/* テーブル */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.user-table th {
+    padding: 16px;
+    background: var(--bg, #f1f5f9);
+    color: var(--tx, #1e293b);
+    font-weight: 600;
+    border-bottom: 1px solid var(--bd, #e2e8f0);
+}
+
+.user-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--bd, #e2e8f0);
+    color: var(--tx, #1e293b);
+}
+
+.user-table tr:last-child td {
+    border-bottom: none;
+}
+
+.user-table tbody tr:hover {
+    background: var(--bg, #f8fafc);
+}
+
+/* 権限バッジ */
+.authority-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.authority-badge.admin {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.authority-badge.worker {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* 編集ボタン */
+.user-edit-button {
+    display: inline-block;
+    padding: 7px 18px;
+    text-decoration: none;
+}
+
+/* ユーザー登録ボタン */
+.user-list-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* スマホ対応 */
+@media (max-width: 700px) {
+    .user-list-page {
+        margin-top: 30px;
+    }
+
+    .user-list-card {
+        padding: 12px;
+    }
+
+    .user-table th,
+    .user-table td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+
+    .user-list-header h1 {
+        font-size: 22px;
+    }
+
+    .user-list-header .back-button {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
 }
