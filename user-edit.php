@@ -2,7 +2,6 @@
 <?php require "config/database.php"; ?>
 <?php
 $error_message = "";
-$success_message = "";
 
 // 1. admin.phpのURL（?id=〜）からユーザーIDを取得
 $user_id = $_GET['id'] ?? null;
@@ -28,7 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // 用意した?の部分に入力したものを当てはめて、データベースの情報を更新する
             $sql->execute([$user_name, $password, $authority, $user_id]);
 
-            $success_message = "ユーザー情報を更新しました。";
+            // 更新成功したらadmin.phpへ移動する
+            header('Location: admin.php');
+            exit();
+            
         } catch (Throwable $e) {
             $error_message = "更新エラーが発生しました: " . $e->getMessage();
         }

@@ -4,7 +4,7 @@
     <h1>ユーザー一覧</h1>
 </header>
 <div>
-    <button type="button" onclick="location.href='user-add.php'">新規登録</button>
+    <button type="button" onclick="location.href='user-add.php'">＋ 新規登録</button>
 </div>
 <table>
     <tr>
