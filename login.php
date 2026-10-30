@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
 
 <?php require "header.php"; ?>
 <header>
-    <h1>ログイン</h1>
+    <h1 class="hd_h1">ログイン</h1>
 </header>
 
 <!-- エラーメッセージがある場合に赤字で表示 -->
@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
     <p style="color: red;"><?php echo htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'); ?></p>
 <?php endif; ?>
 
-<form action="" method="post">
+<form action=""  class= "login_form" method="post">
     <p>
         ユーザー名<br>
         <input type="text" name="user-name"><br>
