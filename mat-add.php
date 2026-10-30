@@ -1,6 +1,10 @@
 <?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
-<form action="mat.php" method="post">
+
+    <button type="button" class="b mat-edit-button" style="margin-left:23px; margin-top:20px" onclick="history.back()">戻る</button>
+    <h1 class="hd_h1">マット一覧</h1>
+
+<form action="mat.php" method="post" class="mat-add-form">
     <div>
         <p>シリアル番号</p>
         <input type="text" name="serial"  required>
@@ -28,6 +32,6 @@
     ?>
     <div>
         <button id="cancel-mat-add" type="button" onclick="location.href='mat.php'">キャンセル</button>
-        <input type="submit" value="追加する">
+        <input type="submit" value="追加する" style="color: white;">
     </div>
 </form>
