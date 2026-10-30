@@ -17,8 +17,12 @@ if(!empty($_POST['action'])){
             $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
             $size = (int)$_POST['size'];
             $sql = $pdo -> prepare("update possess_mat set serial_id=?, stock_id=?, mat_spec_id=? where mat_id=?");
-            var_dump($matId, $serial, $inventory, $size);
             $sql -> execute([$serial, $inventory, $size, $matId]);
+            break;
+        case "delete":
+            $matId = (int)$_POST['id'];
+            $sql = $pdo -> prepare("delete from possess_mat where mat_id = ?");
+            $sql -> execute([$matId]);
             break;
     }
 }

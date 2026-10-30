@@ -1,6 +1,6 @@
 <?php require "header.php"; ?>
 <?php require "config/database.php"; ?>
-<form action="mat.php" method="post">
+<form id="mat-edit-form" action="mat.php" method="post">
     <div>
         <p>シリアル番号</p>
         <?php
@@ -34,7 +34,7 @@
         </select>
     </div>
     <?php
-    echo "<input type='hidden' name='action' value='edit'>";
+    echo "<input id='mat-edit-action' type='hidden' name='action' value='edit'>";
     echo "<input type='hidden' name='id' value='$matId'>";
     $sql = $pdo -> query("select * from inventory");
     echo "<p>連携製品</p>";
@@ -50,8 +50,9 @@
     echo "</select>";
     ?>
     <div>
+        <input id="mat-delete" type="submit" value="削除する">
         <button id="cancel-mat-add" type="button" onclick="location.href='mat.php'">キャンセル</button>
-        <input type="submit" value="更新する">
+        <input id="mat-edit" type="submit" value="更新する">
     </div>
 </form>
 <?php require "footer.php"; ?>
