@@ -3,17 +3,7 @@
 <?php
 $error_message = "";
 
-// 1. admin.phpのURL（?id=〜）からユーザーIDを取得
-$user_id = $_GET['id'] ?? null;
-
-// idが取得できなかったらadminページへ追い返す
-if (empty($user_id)) {
-    // admin.phpにリダイレクト
-    header('Location: admin.php');
-    exit();
-}
-
-// 2. 更新ボタン（POST）が押されたときの処理
+//  登録ボタン（POST）が押されたときの処理
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // 送られてきたデータをそれぞれ変数に代入
     $user_name = $_POST['user_name'] ?? '';
@@ -26,12 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $sql = $pdo->prepare("insert into user (user_name, password, authority) values (?, ?, ?)");
             $sql->execute([$user_name, $password, $authority]);
 
-            // 更新成功したらadmin.phpへリダイレクト
+            // 登録成功したらadmin.phpへリダイレクト
             header('Location: admin.php');
             exit();
             
         } catch (Throwable $e) {
-            $error_message = "更新エラーが発生しました: " . $e->getMessage();
+            $error_message = "登録エラーが発生しました: " . $e->getMessage();
         }
     } else {
         $error_message = "すべての項目を入力してください。";
@@ -72,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div>
         <div>
             <button type="button" onclick="location.href='admin.php'">キャンセル</button>
-            <input type="submit" value="更新">
+            <input type="submit" value="登録">
         </div>
     </div>
 </form>
