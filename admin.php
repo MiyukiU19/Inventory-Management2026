@@ -1,12 +1,11 @@
 <?php require "header.php"; ?>
-
 <?php require "config/database.php"; ?>
 
 <main class="page-container user-list-page">
 
 <div class="hd user-list-header">
     <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;"> 戻る</a>
-    <h1 style="font-size: 25px;">ユーザー一覧</h1>
+    <h1 style="font-size: 25px;">ユーザー管理</h1>
 </div>
 <div class="user-list-footer">
     <a href="user-add.php" class="b p">＋ ユーザー登録</a>
@@ -54,9 +53,5 @@
     </table>
 
 </section>
-
-
-
 </main>
-
 <?php require "footer.php"; ?>
