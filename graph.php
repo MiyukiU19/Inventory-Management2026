@@ -23,7 +23,33 @@
     <div>
         <p>期間</p>
         <select>
-            
+            <?php
+            // 2026年11月から現在の月まで選択肢を作成する
+            $currentYear = 2025;  // 開始年
+            $currentMonth = 11;   // 開始月
+            $endYear = (int)date('Y'); // 現在の年
+            $endMonth = (int)date('n'); // 現在の月
+
+            // 「現在の年が終了年より小さい」または「同じ年だけど月が終了月以下」の間ループし続ける
+            while (($currentYear < $endYear) || ($currentYear == $endYear && $currentMonth <= $endMonth)) {
+                // sprintfで2桁空白埋めし、できた空白をHTML用の '&nbsp;' に置き換える
+                $displayMonth = str_replace(' ', '&nbsp;', sprintf("%2d", $currentMonth)); // <- うまくいっていないので、可能ならCSSで調整してほしいです。
+
+                // optionタグの出力
+                echo "<option>";
+                echo "{$currentYear}年 {$displayMonth}月";
+                echo "</option>\n";
+
+                // 月を1つ進める
+                $currentMonth++;
+
+                // もし12月を超えたら、翌年の1月にする
+                if ($currentMonth > 12) {
+                    $currentMonth = 1;
+                    $currentYear++;
+                }
+            }
+            ?>
         </select>
     </div>
     <div>
