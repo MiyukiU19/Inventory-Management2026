@@ -544,3 +544,28 @@ margin: 20px auto;
     position: absolute;
     left: max(0px, calc((100% - 560px) / 2));
 }
+/* ユーザー登録画面 */
+#user-add-form input[type="text"] {
+    color: black;
+}
+
+#user-add-form .user-add-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+#user-add-form .cancel-button {
+    width: 100px;
+}
+
+#user-add-form input[type="submit"] {
+    background-color: #60a5fa;
+    border: none;
+    border-radius: 8px;
+    color: #131827;
+    padding: 7px 16px;
+    font-size: 13px;
+    cursor: pointer;
+}
