@@ -59,8 +59,9 @@ try {
 ?>
 
 <?php require "header.php"; ?>
-<header>
-    <h1>ユーザー編集</h1>
+<header class="hd_h1 user-list-header"  >
+    <button type="button" class="b mat-edit-button back-button"  onclick="location.href='menu.php'" >戻る</button>
+    <h1 >ユーザー編集</h1>
 </header>
 
 <!-- エラーや成功メッセージの表示 -->
@@ -71,7 +72,7 @@ try {
     <p style="color: green;"><?php echo htmlspecialchars($success_message, ENT_QUOTES, 'UTF-8'); ?></p>
 <?php endif; ?>
 
-<form action="" method="post">
+<form id="user-edit-form" class="mat-add-form"  action="" method="post">
     <div>
         <p>ユーザー名</p>
         <input type="text" name="user_name" value="<?php echo htmlspecialchars($user['user_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
@@ -92,14 +93,26 @@ try {
     </div>
 
     <div>
-        <!-- 削除ボタン -->
-        <button type="button" onclick="if(confirm('本当に削除しますか？')) location.href='user-delete.php?id=<?php echo $user_id; ?>';">削除</button>
-        
-        <div>
-            <button type="button" onclick="location.href='admin.php'">キャンセル</button>
-            <input type="submit" value="更新">
-        </div>
+    <!-- 削除ボタン -->
+    <button type="button" class="mat-edit-button"
+        style="background-color: red; height: 40px;"
+        onclick="if(confirm('本当に削除しますか？')) location.href='user-delete.php?id=<?php echo $user_id; ?>';">
+        削除
+    </button>
+
+    <div>
+        <!-- キャンセルボタン -->
+        <button type="button" class="mat-edit-button cancel-button"
+            style="height: 40px; width: 100px;"
+            onclick="location.href='admin.php'">
+            キャンセル
+        </button>
+
+        <!-- 更新ボタン -->
+        <input type="submit" value="更新"
+            style="height: 40px; padding: 7px 12px; margin: 10px;">
     </div>
+</div>
 </form>
 
 <?php require "footer.php"; ?>

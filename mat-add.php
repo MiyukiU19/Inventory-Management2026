@@ -1,8 +1,11 @@
 <?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
 
-    <button type="button" class="b mat-edit-button" style="margin-left:23px; margin-top:20px" onclick="history.back()">戻る</button>
-    <h1 class="hd_h1">マット一覧</h1>
+    <header class="hd_h1 mat-add-header">
+    <button type="button" class="b mat-edit-button back-button"
+    onclick="history.back()">戻る</button>
+    <h1 class="hd_h1">マット追加</h1>
+    </header>
 
 <form action="mat.php" method="post" class="mat-add-form">
     <div>
