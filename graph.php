@@ -6,14 +6,20 @@
 <link rel="stylesheet" href="css/choices.min.css">
 
 <form>
-    <div>
+    <div id="stocks">
         <p>商品名</p>
         <select id="stock-select" multiple>
             <?php
             // 全ての在庫を複数選択できるようにする。
             $sql = $pdo -> query("select * from inventory");
+            $firstStock = true;
             foreach($sql as $row){
-                echo "<option value='", $row['stock_id'], "'>";
+                if($firstStock){
+                    echo "<option value='", $row['stock_id'], "' selected>";
+                    $firstStock = false;
+                } else {
+                    echo "<option value='", $row['stock_id'], "'>";
+                }
                 echo $row['stock_name'];
                 echo "</option>";
             }
