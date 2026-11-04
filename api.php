@@ -3,68 +3,86 @@
 
 require "config/database.php";
 
-// 1. JavaScriptから送られてきたJSONデータを受け取って、PHPの配列に変換する
+// JavaScriptから送られてきたJSONデータを受け取って、PHPの配列に変換する
 $raw_data = file_get_contents('php://input');
 $request = json_decode($raw_data, true);
 
-// 2. 「何をしてほしいか（action）」が書いてあるか確認
+// 「何をしてほしいか（action）」が書いてあるか確認
 // 書いていなければ、何も処理できないのでエラーとして返す
 $action = isset($request['action']) ? $request['action'] : '';
 
-// 3. 結果を入れるための空の配列を用意
+// 結果を入れるための空の配列を用意
 $response = [];
 
-// 4. action の中身によって、処理を振り分ける（switch文）
-switch ($action) {
-    case 'get_graph_data':
-        // グラフに必要なデータを返す
-        // 送られてきた追加データ（年など）を変数に入れる
-        $targetYear = $request['year'];
-        $targetMonth = $request['month'];
-        $targetStock = $request['stock'];
+// get_graph_dataを実行するための関数
+function getGraphData($pdo, $request){
+    $targetYear = $request['year'] ?? null;
+    $targetMonth = $request['month'] ?? null;
+    $targetStocks = $request['stocks'] ?? [];
 
-        if(empty($targetYear) || empty($targetMonth) || empty($targetStock)){
-            break;
+    // データが足りない場合はここでエラーの配列を返す
+    if(empty($targetYear) || empty($targetMonth) || empty($targetStocks) || !is_array($targetStocks)){
+        return [
+            'status' => 'error',
+            'message' => '必要なデータが足りません。'
+        ];
+    }
+
+    $startDate = sprintf('%04d-%02d-01', $targetYear, $targetMonth);
+    $endDate = date('Y-m-01', strtotime($startDate . ' +1 month'));
+    $daysInMonth = date('t', strtotime($startDate));
+
+    $labels = [];
+    for ($i = 1; $i <= $daysInMonth; $i++) {
+        $labels[] = $i . '日';
+    }
+
+    $sql = $pdo->prepare("
+        SELECT * FROM inventory_history
+        WHERE stock_id = ? AND update_date >= ? AND update_date < ?
+        ORDER BY update_date ASC
+    ");
+
+    $allStockDatasets = [];
+
+    foreach ($targetStocks as $stockId) {
+        $sql->execute([$stockId, $startDate, $endDate]);
+        $result = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+        $values = [];
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $values[$i] = null;
         }
 
-        // 日付をsqlで扱いやすい形に変換
-        $startDate = sprintf('%04d-%02d-01', $targetYear, $targetMonth);
-        $endDate = date('Y-m-01', strtotime($startDate . ' +1 month'));
+        $stockName = '商品' . $stockId;
 
-        $sql = $pdo -> prepare("
-            select * from inventory_history
-            where stock_id=?
-            and update_date >= ?
-            and update_date < ?
-            order by update_date
-        ");
-        $sql -> execute([$targetStock, $startDate, $endDate]);
-        $sqlResult = $sql -> fetchAll(PDO::FETCH_ASSOC);
-
-        $labels = [];
-        $values = [];
-        $stockName = ''; // グラフのタイトル用
-
-        foreach ($sqlResult as $row) {
-            // X軸（下）に表示する日付
-            $labels[] = $row['update_date'];
-
-            // Y軸（縦）に表示する数値（※カラム名は実際のテーブルに合わせて変更してください）
-            $values[] = $row['quantity'];
-
-            // stock_nameはどの行も同じはずなので上書き
+        foreach ($result as $row) {
+            $day = (int)date('d', strtotime($row['update_date']));
+            $values[$day] = $row['quantity']; // ※実際のカラム名
             if (isset($row['stock_name'])) {
                 $stockName = $row['stock_name'];
             }
         }
 
-
-        $response = [
-            'status' => 'success', // 成功したという印
-            'name' => $stockName,
-            "labels" => $labels,
-            'values' => $values
+        $allStockDatasets[] = [
+            'id'     => $stockId,
+            'name'   => $stockName,
+            'values' => array_values($values)
         ];
+    }
+
+    // 成功したデータを返す
+    return [
+        'status'   => 'success',
+        'labels'   => $labels,
+        'datasets' => $allStockDatasets
+    ];
+}
+
+// action の中身によって、処理を振り分ける（switch文）
+switch ($action) {
+    case 'get_graph_data':
+        $response = getGraphData($pdo, $request);
         break;
 
     default:
@@ -84,7 +102,7 @@ if(empty($response)){
     ];
 }
 
-// 5. 処理結果をJSONにしてJavaScriptに返す
+// 処理結果をJSONにしてJavaScriptに返す
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($response);
 exit;
