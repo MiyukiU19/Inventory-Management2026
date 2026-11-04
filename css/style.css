@@ -10,7 +10,7 @@
 }
 .hd_h1{
     text-align: center;
-    font-size:  40px;
+    font-size:  20px;
     margin: 20px;
 }
 /* 個別のメニューボタン */
@@ -70,6 +70,7 @@ margin: 50px auto 16px;
 
 .hd{
     display: flex;
+    /* text-align: center; */
     gap: 325px;
 
 }
@@ -394,7 +395,9 @@ margin: 20px auto;
     align-items: center;
     justify-content: center;
     position: relative;
-    margin-bottom: 12px;
+    width: min(528px, calc(100% - 72px));
+    margin: 20px auto 12px;
+    box-sizing: border-box;
 }
 
 .user-list-header h1 {
@@ -478,6 +481,9 @@ margin: 20px auto;
 
 /* スマホ対応 */
 @media (max-width: 700px) {
+    .user-list-header {
+    width: calc(100% - 52px);
+}
     .user-list-page {
         margin-top: 30px;
     }
@@ -508,4 +514,33 @@ margin: 20px auto;
 .mat-edit-header {
     gap: 10px;
     align-items: center;
+}
+/* ユーザー編集画面 */
+#user-edit-form input[type="text"] {
+    color: black;
+}
+
+#user-edit-form .cancel-button {
+    height: 30px;
+}
+/* ボタン配置 */
+#user-edit-form > div:last-child > div {
+    display: flex;
+    gap: 12px;
+}
+/* マット追加画面のヘッダー */
+.mat-add-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.mat-add-header h1 {
+    margin: 0;
+}
+
+.mat-add-header .back-button {
+    position: absolute;
+    left: max(0px, calc((100% - 560px) / 2));
 }
