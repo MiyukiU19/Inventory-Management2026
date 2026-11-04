@@ -12,14 +12,8 @@
             <?php
             // 全ての在庫を複数選択できるようにする。
             $sql = $pdo -> query("select * from inventory");
-            $firstStock = true;
             foreach($sql as $row){
-                if($firstStock){
-                    echo "<option value='", $row['stock_id'], "' selected>";
-                    $firstStock = false;
-                } else {
-                    echo "<option value='", $row['stock_id'], "'>";
-                }
+                echo "<option value='", $row['stock_id'], "'>";
                 echo $row['stock_name'];
                 echo "</option>";
             }
@@ -28,11 +22,11 @@
     </div>
     <div>
         <p>期間</p>
-        <select>
+        <select id="chart-period">
             <?php
             // 2026年11月から現在の月まで選択肢を作成する
-            $currentYear = 2025;  // 開始年
-            $currentMonth = 11;   // 開始月
+            $currentYear = 2023;  // 開始年
+            $currentMonth = 10;   // 開始月
             $endYear = (int)date('Y'); // 現在の年
             $endMonth = (int)date('n'); // 現在の月
 
@@ -42,7 +36,7 @@
                 $displayMonth = str_replace(' ', '&nbsp;', sprintf("%2d", $currentMonth)); // <- うまくいっていないので、可能ならCSSで調整してほしいです。
 
                 // optionタグの出力
-                echo "<option>";
+                echo "<option value='{$currentYear} {$currentMonth}'>";
                 echo "{$currentYear}年 {$displayMonth}月";
                 echo "</option>\n";
 

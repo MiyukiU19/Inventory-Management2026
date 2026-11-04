@@ -1,13 +1,17 @@
-let selectedStock = [1];
+let selectedStock = null;
+let selectedYear = 2023;
+let selectedMonth = 10;
 let myChart = null;
+
+// グラフを作成し表示する
 async function createChart() {
     // 【変更】Choices.jsなどで選ばれた複数の値を配列として用意します
     // 実際の画面では、UIから選択された値を取得してここに入れます
     const requestData = {
         action: "get_graph_data",
         stocks: selectedStock, // 複数のstock_idを配列として送る
-        year: 2023,
-        month: 10
+        year: selectedYear,
+        month: selectedMonth
     };
 
     const response = await fetch('api.php', {
@@ -61,12 +65,10 @@ async function createChart() {
     });
 }
 
-createChart();
-
+// 在庫選択
 const stockSelect = document.getElementById('stock-select');
-stockSelect.addEventListener("change", (e) => {
+stockSelect.addEventListener("change", () => {
     selectedStock = choices.getValue(true);
-    console.log(selectedStock);
     createChart();
 })
 
@@ -101,4 +103,15 @@ choicesContainer.addEventListener('mousedown', function(event) {
             stockSelect.dispatchEvent(changeEvent);
         }
     }
+});
+
+// 期間選択
+const chartPeriod = document.querySelector("#chart-period");
+chartPeriod.addEventListener("change", (e) => {
+    console.log(e.target.value);
+    let period = e.target.value.split(" ");
+    selectedYear = period[0];
+    selectedMonth = period[1];
+
+    createChart();
 });
