@@ -25,7 +25,7 @@
         <select id="chart-period">
             <?php
             // 2026年11月から現在の月まで選択肢を作成する
-            $currentYear = 2023;  // 開始年
+            $currentYear = 2022;  // 開始年
             $currentMonth = 10;   // 開始月
             $endYear = (int)date('Y'); // 現在の年
             $endMonth = (int)date('n'); // 現在の月
@@ -53,8 +53,8 @@
         </select>
     </div>
     <div>
-        <p>前年比</p>
-        <input type="checkbox">
+        <p>前年と比較</p>
+        <input id="check-last-year" type="checkbox">
     </div>
 </form>
 

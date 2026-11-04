@@ -15,17 +15,15 @@ $action = isset($request['action']) ? $request['action'] : '';
 $response = [];
 
 // get_graph_dataを実行するための関数
-function getGraphData($pdo, $request){
+function getGraphData($pdo, $request) {
     $targetYear = $request['year'] ?? null;
     $targetMonth = $request['month'] ?? null;
     $targetStocks = $request['stocks'] ?? [];
 
-    // データが足りない場合はここでエラーの配列を返す
+    // 【削除】$isCompare を受け取る処理はもう不要なので消します
+
     if(empty($targetYear) || empty($targetMonth) || empty($targetStocks) || !is_array($targetStocks)){
-        return [
-            'status' => 'error',
-            'message' => '必要なデータが足りません。'
-        ];
+        return ['status' => 'error', 'message' => '必要なデータが足りません。'];
     }
 
     $startDate = sprintf('%04d-%02d-01', $targetYear, $targetMonth);
@@ -46,14 +44,11 @@ function getGraphData($pdo, $request){
     $allStockDatasets = [];
 
     foreach ($targetStocks as $stockId) {
+        // --- 今年のデータを取得 ---
         $sql->execute([$stockId, $startDate, $endDate]);
         $result = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-        $values = [];
-        for ($i = 1; $i <= $daysInMonth; $i++) {
-            $values[$i] = null;
-        }
-
+        $values = array_fill(1, $daysInMonth, null);
         $stockName = '商品' . $stockId;
 
         foreach ($result as $row) {
@@ -64,14 +59,32 @@ function getGraphData($pdo, $request){
             }
         }
 
-        $allStockDatasets[] = [
+        $stockData = [
             'id'     => $stockId,
             'name'   => $stockName,
             'values' => array_values($values)
         ];
+
+        // --- 【変更】if文をなくし、常に前年のデータを取得して追加する ---
+        $lastYearStartDate = sprintf('%04d-%02d-01', $targetYear - 1, $targetMonth);
+        $lastYearEndDate = date('Y-m-01', strtotime($lastYearStartDate . ' +1 month'));
+
+        $sql->execute([$stockId, $lastYearStartDate, $lastYearEndDate]);
+        $lastYearResult = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+        $lastYearValues = array_fill(1, $daysInMonth, null);
+
+        foreach ($lastYearResult as $row) {
+            $day = (int)date('d', strtotime($row['update_date']));
+            $lastYearValues[$day] = $row['quantity']; // ※実際のカラム名
+        }
+
+        $stockData['last_year_values'] = array_values($lastYearValues);
+        // -----------------------------------------------------------
+
+        $allStockDatasets[] = $stockData;
     }
 
-    // 成功したデータを返す
     return [
         'status'   => 'success',
         'labels'   => $labels,
