@@ -35,9 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 <?php require "header.php"; ?>
-<header>
+<div>
+    <!-- <a href="inventory.php"> 戻る</a> -->
     <h1>在庫登録</h1>
-</header>
+</div>
 
 <!-- エラーメッセージの表示 -->
 <?php if (!empty($error_message)): ?>
