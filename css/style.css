@@ -569,3 +569,69 @@ margin: 20px auto;
     font-size: 13px;
     cursor: pointer;
 }
+/* 在庫一覧画面 */
+
+.inventory-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.inventory-header h1 {
+    margin: 0;
+}
+
+.inventory-header .back-button {
+    position: absolute;
+    left: max(0px, calc((100% - 560px) / 2));
+}
+
+.inventory-controls {
+    width: min(560px, calc(100% - 40px));
+    margin: 30px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.inventory-controls form {
+    display: flex;
+    gap: 8px;
+}
+
+.inventory-item {
+    width: min(560px, calc(100% - 40px));
+    margin: 12px auto;
+    border: 1px solid var(--bd, #e2e8f0);
+    border-radius: 8px;
+}
+
+.inventory-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    text-decoration: none;
+    color: var(--tx, #1e293b);
+}
+
+.inventory-image img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.inventory-name {
+    font-weight: bold;
+}
+.inventory-controls input[type="submit"] {
+    border-radius: 8px;
+    padding: 7px 16px;
+    border: 1px solid var(--bd, #e2e8f0);
+    cursor: pointer;
+}
+.inventory-detail {
+    font-size: 12px;
+}
