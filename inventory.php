@@ -42,6 +42,7 @@ try {
         onclick="location.href='inventory-add.php'">登録</button>
 </div>
 <!-- 在庫一覧表示 -->
+<div>
 <?php
 // 該当する在庫が1件以上する場合
 // if (isset($sql) && $sql->rowCount() > 0){
@@ -75,6 +76,9 @@ if (isset($sql) && $sql->rowCount() > 0){
         echo "</a>";
         echo "</div>";
     }
+}else {
+    echo "該当する在庫はありません。";
 }
 ?>
+</div>
 <?php require "footer.php"; ?>

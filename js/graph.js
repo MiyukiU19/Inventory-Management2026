@@ -1,6 +1,13 @@
+// 選択されている在庫
 let selectedStock = null;
-let selectedYear = 2023;
-let selectedMonth = 10;
+
+// 期間
+const chartPeriod = document.querySelector("#chart-period");
+let period = chartPeriod.value.split(" ");
+let selectedYear = period[0];
+let selectedMonth = period[1];
+
+// グラフ
 let myChart = null;
 
 // グラフを作成し表示する
@@ -26,6 +33,9 @@ async function createChart() {
         myChart.destroy();
     }
 
+    // グラフを描く瞬間のチェックボックスの状態を見ておく
+    const isCompare = document.getElementById('check-last-year').checked;
+
     // グラフの線の「色」のリストを用意しておく（商品が増えても対応できるように）
     const colors = [
         { border: 'rgba(54, 162, 235, 1)', bg: 'rgba(54, 162, 235, 0.2)' }, // 青
@@ -49,6 +59,23 @@ async function createChart() {
             pointHitRadius: 20,
             spanGaps: true, // 空白の日を繋ぐ
         });
+
+        // 前年のデータ（常に存在している）
+        chartDatasets.push({
+            label: item.name + '（前年）',
+            data: item.last_year_values,
+            borderColor: color.border,
+            backgroundColor: color.bg,
+            borderDash: [5, 5],
+            pointHitRadius: 20,
+            spanGaps: true,
+
+            // 【重要】チェックボックスがOFFなら最初から隠しておく
+            hidden: !isCompare,
+
+            // 【重要】あとで切り替えるときに見つけやすいよう、オリジナルの目印をつけておく
+            isLastYear: true
+        });
     });
 
     const canvas = document.getElementById('stock-chart');
@@ -60,7 +87,39 @@ async function createChart() {
         },
         options: {
             responsive: true,
-            interaction: { mode: 'index', intersect: false }
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: {
+                    labels: {
+                        // 前年のラベルを表示しない。
+                        // filter機能を使って、表示するラベルを選別する
+                        filter: function(item, chart) {
+                            // item.datasetIndex で、対象のデータセットの番号がわかる
+                            const dataset = chart.datasets[item.datasetIndex];
+
+                            // isLastYearが「ついていない」ものだけを表示（true）にする
+                            return !dataset.isLastYear;
+                        }
+                    },
+                    title: {
+                        // 
+                        display: true,
+                        text: '(個)',
+                        align: 'start', // 左端に寄せる
+                        color: '#666',
+                        font: {
+                            size: 12,
+                            weight: 'normal' // デフォルトの太字を解除する
+                        }
+                    }
+                }
+            },
+            // 【変更】scales（目盛り）の設定に title を追加します
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            }
         }
     });
 }
@@ -106,12 +165,32 @@ choicesContainer.addEventListener('mousedown', function(event) {
 });
 
 // 期間選択
-const chartPeriod = document.querySelector("#chart-period");
 chartPeriod.addEventListener("change", (e) => {
     console.log(e.target.value);
-    let period = e.target.value.split(" ");
+    period = e.target.value.split(" ");
     selectedYear = period[0];
     selectedMonth = period[1];
 
     createChart();
+});
+
+// 前年比
+const checkLastYear = document.querySelector("#check-last-year");
+checkLastYear.addEventListener("click", () => {
+    if (!myChart) return; // まだグラフが出ていなければ何もしない。
+
+    // 現在のチェック状態を取得
+    const isCompare = document.getElementById('check-last-year').checked;
+
+    // グラフのデータセットを1つずつ確認する
+    myChart.data.datasets.forEach(dataset => {
+        // さきほど付けた目印「isLastYear: true」を持っている線（前年の線）だけ設定を変える
+        if (dataset.isLastYear === true) {
+            // チェックが入っていれば hidden を false(表示) に、入っていなければ true(非表示) にする
+            dataset.hidden = !isCompare;
+        }
+    });
+
+    // グラフの見た目だけを再描画する（fetchしないので一瞬で終わる）
+    myChart.update();
 });
