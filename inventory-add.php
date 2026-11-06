@@ -63,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
         } catch (Throwable $e) {
             // エラーが発生した場合はロールバック
+            // エラーが発生しても入力された内容がリセットされないようになった
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
