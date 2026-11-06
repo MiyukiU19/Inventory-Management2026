@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $container_weight = $_POST['container_weight'] ?? ''; // 容器の重さ
     $amount           = $_POST['amount'] ?? ''; // 1個あたりの金額
     $border_line      = $_POST['border_line'] ?? ''; // 発注基準値
-    $mat_id           = $_POST['mat_id'] ?? null; // マットID　※設定しなくてもOK
+    $mat_id           = $_POST['serial_id'] ?? null; // マットID　※設定しなくてもOK
     $img              = ''; // 商品画像
 
     // 画像ファイルが選択され、エラーなくアップロードされたか確認
@@ -20,31 +20,53 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $file_name = basename($_FILES['img']['name']); 
 
         $upload_dir = 'images/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
 
         $upload_path = $upload_dir . $file_name;
 
         if (move_uploaded_file($file_tmp, $upload_path)) {
-            $img_name = $upload_path; // データベースにパスを保存
+            $img = $upload_path; // データベースにパスを保存
         } else {
             $error_message = "画像のアップロードに失敗しました。";
         }
     } else {
         // 画像が選択されなかった場合は仮の画像を自動設定
-        $img_name = 'images/no-toroku.png';
+        $img = 'no_toroku.png';
     }
 
     // 必須事項の入力があるかチェック
     if (!empty($stock_name) && !empty($weight) && !empty($amount) && !empty($border_line)) {
         try {
+            // トランザクション開始
+            $pdo->beginTransaction();
+
             // データベースに新しい在庫情報を追加
             $sql = $pdo->prepare("insert into inventory (stock_name, weight, container_weight, amount, border_line, img) values (?, ?, ?, ?, ?, ?)");
             $sql->execute([$stock_name, $weight, $container_weight, $amount, $border_line, $img]);
+
+            // 2. 今登録したばかりの在庫の自動採番された stock_id を取得する
+            $new_stock_id = $pdo->lastInsertId();
+
+            // 3. シリアル番号（mat_id）が選択されていた場合、所有マット (possess_mat) 側を更新する
+            if (!empty($mat_id)) {
+                $update_sql = $pdo->prepare("UPDATE possess_mat SET stock_id = ? WHERE mat_id = ?");
+                $update_sql->execute([$new_stock_id, $mat_id]);
+            }
+
+            // すべて成功したらコミット（確定）
+            $pdo->commit();
 
             // 登録成功したらadmin.phpへリダイレクト
             header('Location: inventory.php');
             exit();
             
         } catch (Throwable $e) {
+            // エラーが発生した場合はロールバック
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $error_message = "登録エラーが発生しました: " . $e->getMessage();
         }
     } else {
@@ -88,7 +110,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div>
         <p>シリアル番号</p>
         <?php
-            echo "<input type='hidden' name='action' value='add'>";
             $sql = $pdo->query("select * from possess_mat where stock_id is null");
             echo "<select name='serial_id'>";
             echo "<option></option>";
