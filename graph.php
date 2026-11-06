@@ -5,13 +5,17 @@
 <script src="js/graph.js" defer></script>
 <link rel="stylesheet" href="css/choices.min.css">
 
-<form>
+
+<div class="hd user-list-header">
+    <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;"> 戻る</a>
+    <h1 style="font-size: 25px;">在庫状況</h1>
+</div>
+<form class="graph-controls">
     <div id="stocks">
         <p>商品名</p>
         <select id="stock-select" multiple>
             <?php
-            // 全ての在庫を複数選択できるようにする。
-            $sql = $pdo -> query("select * from inventory");
+            $sql = $pdo->query("select * from inventory");
             foreach($sql as $row){
                 echo "<option value='", $row['stock_id'], "'>";
                 echo $row['stock_name'];
@@ -20,6 +24,7 @@
             ?>
         </select>
     </div>
+
     <div>
         <p>期間</p>
         <select id="chart-period">
@@ -54,7 +59,7 @@
     </div>
     <div>
         <p>前年比</p>
-        <input type="checkbox">
+        <input type="checkbox" style="width: 20px; height:20px; border:1px solid black;">
     </div>
 </form>
 
