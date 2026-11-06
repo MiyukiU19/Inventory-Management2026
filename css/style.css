@@ -635,3 +635,78 @@ margin: 20px auto;
 .inventory-detail {
     font-size: 12px;
 }
+
+/* グラフページ */
+.graph-controls {
+    width: min(900px, calc(100% - 40px));
+    margin: 30px auto;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.graph-controls > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.graph-controls p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.graph-controls select {
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #475569;
+    border-radius: 8px;
+}
+
+#stocks {
+    flex: 1;
+}
+
+#stock-select {
+    width: 100%;
+}
+
+#chart-period {
+    min-width: 160px;
+}
+
+.graph-controls input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+/* グラフページ全体 */
+.graph-controls {
+    width: calc(100% - 80px);
+    max-width: 1000px;
+    margin: 30px auto;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* グラフの表示範囲 */
+#stock-chart {
+    display: block;
+    width: calc(100% - 80px) !important;
+    max-width: 1000px;
+    margin: 30px auto;
+}
+
+/* スマホ対応 */
+@media (max-width: 700px) {
+    .graph-controls {
+        width: calc(100% - 32px);
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    #stock-chart {
+        width: calc(100% - 32px) !important;
+    }
+}
