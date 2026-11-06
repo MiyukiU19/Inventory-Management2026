@@ -34,7 +34,7 @@ try {
 <!-- 検索フォーム -->
 <div class="inventory-controls">
     <form action="inventory.php" method="get">
-        <input type="text" name="search" placeholder="🔍在庫を検索">
+        <input type="text" name="search" style="border: 1px solid black ; border-radius:8px" placeholder="🔍在庫を検索">
         <input type="submit" style="background-color:blue; color:white" value="検索">
     </form>
 <!-- 在庫登録ボタン -->
