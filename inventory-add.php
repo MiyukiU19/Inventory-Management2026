@@ -12,14 +12,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $amount           = $_POST['amount'] ?? ''; // 1個あたりの金額
     $border_line      = $_POST['border_line'] ?? ''; // 発注基準値
     $mat_id           = $_POST['mat_id'] ?? null; // マットID　※設定しなくてもOK
-    $img              = $_POST['img'] ?? ''; // 商品画像
+    $img              = ''; // 商品画像
+
+    // 画像ファイルが選択され、エラーなくアップロードされたか確認
+    if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp  = $_FILES['img']['tmp_name']; 
+        $file_name = basename($_FILES['img']['name']); 
+
+        $upload_dir = 'images/';
+
+        $upload_path = $upload_dir . $file_name;
+
+        if (move_uploaded_file($file_tmp, $upload_path)) {
+            $img_name = $upload_path; // データベースにパスを保存
+        } else {
+            $error_message = "画像のアップロードに失敗しました。";
+        }
+    } else {
+        // 画像が選択されなかった場合は仮の画像を自動設定
+        $img_name = 'images/no-toroku.png';
+    }
 
     // 必須事項の入力があるかチェック
     if (!empty($stock_name) && !empty($weight) && !empty($amount) && !empty($border_line)) {
         try {
             // データベースに新しい在庫情報を追加
-            $sql = $pdo->prepare("insert into inventory (stock_name, weight, container_weight, amount, border_line, mat_id, img) values (?, ?, ?, ?, ?, ?, ?)");
-            $sql->execute([$stock_name, $weight, $container_weight, $amount, $border_line, $mat_id, $img]);
+            $sql = $pdo->prepare("insert into inventory (stock_name, weight, container_weight, amount, border_line, img) values (?, ?, ?, ?, ?, ?)");
+            $sql->execute([$stock_name, $weight, $container_weight, $amount, $border_line, $img]);
 
             // 登録成功したらadmin.phpへリダイレクト
             header('Location: inventory.php');
@@ -70,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p>シリアル番号</p>
         <?php
             echo "<input type='hidden' name='action' value='add'>";
-            $sql = $pdo->query("select * from possess_mat");
+            $sql = $pdo->query("select * from possess_mat where stock_id is null");
             echo "<select name='serial_id'>";
             echo "<option></option>";
             foreach($sql as $row){
