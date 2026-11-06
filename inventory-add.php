@@ -15,19 +15,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $img              = ''; // 商品画像
 
     // 画像ファイルが選択され、エラーなくアップロードされたか確認
-    if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
+    // $_FILES → PHPでenctype="multipart/form-data"を使って送信された情報を格納する変数（ファイル特化）
+    // $FILES['img']['error'] ファイルのアップロード時にエラーが発生したかどうかを示すコードを取得
+    if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) { 
         $file_tmp  = $_FILES['img']['tmp_name']; 
-        $file_name = basename($_FILES['img']['name']); 
+        $file_name = basename($_FILES['img']['name']);  //basename ファイル名だけを取り出す関数
 
-        $upload_dir = 'images/';
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
+        // すでに存在するimages/ フォルダを保存先として指定
+        $upload_path = 'images/' . $file_name;
 
-        $upload_path = $upload_dir . $file_name;
-
+        // 一時保存された画像ファイルをimagesフォルダへ移動
         if (move_uploaded_file($file_tmp, $upload_path)) {
-            $img = $upload_path; // データベースにパスを保存
+            $img = $upload_path; // データベースに画像を保存
         } else {
             $error_message = "画像のアップロードに失敗しました。";
         }
