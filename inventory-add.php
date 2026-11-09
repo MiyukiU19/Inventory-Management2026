@@ -76,10 +76,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 <?php require "header.php"; ?>
-<div>
-    <!-- <a href="inventory.php"> 戻る</a> -->
-    <h1 class="hd_h1">在庫登録</h1>
-</div>
+<header class="hd_h1 inventory-header">
+    <button type="button" class="mat-edit-button back-button"
+        onclick="location.href='inventory.php'">戻る</button>
+    <h1>在庫登録</h1>
+</header>
 
 <!-- エラーメッセージの表示 -->
 <?php if (!empty($error_message)): ?>
