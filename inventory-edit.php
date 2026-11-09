@@ -26,11 +26,13 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
 ?>
 <div>
     <div>
+        <!-- 画像 -->
         <?php
         echo '<img src="images/', $stockData['img'], '">'
         ?>
         <div>
             <div>
+                <!-- 個数と重量 -->
                 <p>在庫 <?php echo $lastStockData['quantity'] ?>個</p>
                 <p><?php echo $lastStockData['max_weight'] ?>kg</p>
             </div>
@@ -52,4 +54,6 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+
 <!-- グラフ -->
+<!-- 制作中 -->
