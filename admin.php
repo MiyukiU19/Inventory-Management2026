@@ -8,7 +8,9 @@
     <h1 style="font-size: 25px;">ユーザー管理</h1>
 </div>
 <div class="user-list-footer">
-    <a href="user-add.php" class="b p">＋ ユーザー登録</a>
+    <button type="button" class="mat-edit-button" onclick="location.href='user-add.php'">
+        登録
+    </button>
 </div>
 <section class="card user-list-card">
 

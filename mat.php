@@ -36,9 +36,9 @@ if(!empty($_POST['action'])){
 </div>
 <section class="card mat-list-card">
             <div class="mat-list-footer">
-        <a class="b p mat-add-button" href="mat-add.php">
-            ＋ 登録
-        </a>
+        <button type="button" class="mat-edit-button" style="margin-bottom: 20px;" onclick="location.href='mat-add.php'">
+            登録
+        </button>
     </div>
 
     <div class="mat-table-wrapper">
