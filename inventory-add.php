@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php require "header.php"; ?>
 <div>
     <!-- <a href="inventory.php"> 戻る</a> -->
-    <h1>在庫登録</h1>
+    <h1 class="hd_h1">在庫登録</h1>
 </div>
 
 <!-- エラーメッセージの表示 -->
@@ -45,26 +45,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <p style="color: red;"><?php echo htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'); ?></p>
 <?php endif; ?>
 
-<form action="" method="post" enctype="multipart/form-data">
+<form class="mat-add-form inventory-add-form" action="" method="post" enctype="multipart/form-data">
     <div>
         <p>商品名</p>
         <input type="text" name="stock_name" required>
     </div>
     <div>
         <p>1つあたりの重量</p>
-        <input type="text" name="weight" required>kg
+            <div class="inventory-input-unit">
+                <input type="text" name="weight" required>
+                <span>kg</span>
+            </div>
     </div>
     <div>
         <p>容器の重さ</p>
-        <input type="text" name="container_weight" required>kg
+            <div class="inventory-input-unit">
+                <input type="text" name="container_weight" required>
+                <span>kg</span>
+            </div>
     </div>
     <div>
         <p>1つあたりの金額</p>
-        <input type="text" name="amount" required>円
+            <div class="inventory-input-unit">
+                <input type="text" name="amount" required>
+                <span>円</span>
+            </div>
     </div>
     <div>
         <p>発注基準値</p>
-        <input type="text" name="border_line" required>個
+            <div class="inventory-input-unit">
+                <input type="text" name="border_line" required>
+                <span>個</span>
+            </div>
     </div>
     <div>
         <p>シリアル番号</p>
@@ -85,10 +97,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
 
     <div>
-        <div>
-            <button type="button" onclick="location.href='inventory.php'">キャンセル</button>
+        <div class="inventory-add-buttons">
+            <button type="button" class="cancel-button" onclick="location.href='inventory.php'">キャンセル</button>
             <input type="submit" value="登録">
-        </div>
+        </div>  
     </div>
 </form>
 
