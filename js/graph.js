@@ -15,7 +15,7 @@ async function createChart() {
     // 【変更】Choices.jsなどで選ばれた複数の値を配列として用意します
     // 実際の画面では、UIから選択された値を取得してここに入れます
     const requestData = {
-        action: "get_graph_data",
+        action: "get_multi_graph_data",
         stocks: selectedStock, // 複数のstock_idを配列として送る
         year: selectedYear,
         month: selectedMonth

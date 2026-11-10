@@ -18,9 +18,59 @@ $response = [];
 function getGraphData($pdo, $request) {
     $targetYear = $request['year'] ?? null;
     $targetMonth = $request['month'] ?? null;
-    $targetStocks = $request['stocks'] ?? [];
+    $targetStock = $request['stock'] ?? null;
 
-    // 【削除】$isCompare を受け取る処理はもう不要なので消します
+    if (empty($targetYear) || empty($targetMonth) || empty($targetStock)) {
+        return ['status' => 'error', 'message' => '必要なデータが足りません。'];
+    }
+
+    $startDate = sprintf('%04d-%02d-01', $targetYear, $targetMonth);
+    $endDate = date('Y-m-01', strtotime($startDate . ' +1 month'));
+    $daysInMonth = (int)date('t', strtotime($startDate));
+
+    $labels = [];
+    for ($i = 1; $i <= $daysInMonth; $i++) {
+        $labels[] = $i . '日';
+    }
+
+    $sql = $pdo->prepare("
+        SELECT * FROM inventory_history
+        WHERE stock_id = ? AND update_date >= ? AND update_date < ?
+        ORDER BY update_date ASC
+    ");
+
+    $sql->execute([$targetStock, $startDate, $endDate]);
+    $result = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+    // 1日〜末日までを null で初期化（インデックスは1〜末日）
+    $values = array_fill(1, $daysInMonth, null);
+    $stockName = '商品 ' . $targetStock;
+
+    foreach ($result as $row) {
+        $day = (int)date('d', strtotime($row['update_date']));
+        $values[$day] = $row['quantity'];
+
+        if (!empty($row['stock_name'])) {
+            $stockName = $row['stock_name'];
+        }
+    }
+
+    $stockData = [
+        'label'  => $stockName,
+        'data'   => array_values($values)
+    ];
+
+    return [
+        'status'   => 'success',
+        'labels'   => $labels,
+        'datasets' => [$stockData]
+    ];
+}
+
+function getMultiGraphData($pdo, $request) {
+    $targetYear = $request['year'] ?? null;
+    $targetMonth = $request['month'] ?? null;
+    $targetStocks = $request['stocks'] ?? [];
 
     if(empty($targetYear) || empty($targetMonth) || empty($targetStocks) || !is_array($targetStocks)){
         return ['status' => 'error', 'message' => '必要なデータが足りません。'];
@@ -65,7 +115,7 @@ function getGraphData($pdo, $request) {
             'values' => array_values($values)
         ];
 
-        // --- 【変更】if文をなくし、常に前年のデータを取得して追加する ---
+        // --- 前年のデータを取得して追加する ---
         $lastYearStartDate = sprintf('%04d-%02d-01', $targetYear - 1, $targetMonth);
         $lastYearEndDate = date('Y-m-01', strtotime($lastYearStartDate . ' +1 month'));
 
@@ -80,8 +130,6 @@ function getGraphData($pdo, $request) {
         }
 
         $stockData['last_year_values'] = array_values($lastYearValues);
-        // -----------------------------------------------------------
-
         $allStockDatasets[] = $stockData;
     }
 
@@ -96,6 +144,10 @@ function getGraphData($pdo, $request) {
 switch ($action) {
     case 'get_graph_data':
         $response = getGraphData($pdo, $request);
+        break;
+
+    case "get_multi_graph_data":
+        $response = getMultiGraphData($pdo, $request);
         break;
 
     default:

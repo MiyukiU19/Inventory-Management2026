@@ -24,6 +24,8 @@ $matSql = $pdo -> prepare("select * from possess_mat where stock_id = ?");
 $matSql -> execute([$stockId]);
 $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
 ?>
+<script src="js/chart.js" defer></script>
+<script src="js/inventory-edit.js" defer></script>
 <div>
     <div>
         <!-- 画像 -->
@@ -56,4 +58,22 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
 </div>
 
 <!-- グラフ -->
-<!-- 制作中 -->
+<div>
+    <div>
+        <button id="prev-month-btn"><</button>
+        <div id="display-month">
+            <p id="selected-month">10</p>
+            <p>月</p>
+        </div>
+        <button id="next-month-btn">></button>
+    </div>
+    <canvas id="stock-chart"></canvas>
+</div>
+<script defer>
+    const stockId = <?php echo $stockId; ?>;
+    const prevMonthBtn = document.querySelector("#prev-month-btn");
+    const selectedMonth = document.querySelector("#selected-month");
+    const nextMonthBtn = document.querySelector("#next-month-btn");
+    let stockChart = document.querySelector("#stock-chart");
+    let selectedYear = 2023; // 後で変更
+</script>
