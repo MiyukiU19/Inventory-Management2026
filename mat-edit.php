@@ -3,7 +3,7 @@
 
 <form id="mat-edit-form" class="mat-add-form" action="mat.php" method="post">
 <div class="hd mat-edit-header">
-    <button type="button" class="b mat-edit-button"  onclick="location.href='mat.php'">戻る</button>
+    <button type="button" class="b mat-edit-button"  onclick="location.href='mat.php'">❮</button>
     <h1 style="margin-left: 150px;">マット編集</h1>
 </div>
     <div class="mat-edit-group">
@@ -57,9 +57,8 @@
     echo "</select>";
     ?>
 
-    <div class="mat-edit-actions">
-        <input id="mat-delete" class="mat-delete-button" type="submit"  style="background-color: red; color:white;" value="削除する">
-        <button id="cancel-mat-add" class="mat-cancel-button" type="button" onclick="location.href='mat.php'">キャンセル</button>
+    <div class="mat-edit-actions" style="gap: 20px; " >
+        <input id="mat-delete" class="mat-delete-button" type="submit"  style="background-color: red; color:white; " value="削除する">
         <input id="mat-edit" class="mat-update-button" type="submit" style="color: white;" value="更新する">
     </div>
 

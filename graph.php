@@ -7,7 +7,7 @@
 
 
 <div class="hd user-list-header">
-    <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;"> 戻る</a>
+    <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;">❮</a>
     <h1 style="font-size: 25px;">在庫状況</h1>
 </div>
 <form class="graph-controls">
@@ -59,7 +59,7 @@
     </div>
     <div>
         <p>前年比</p>
-        <input type="checkbox" style="width: 20px; height:20px; border:1px solid black;">
+        <input id="check-last-year" type="checkbox" style="width: 20px; height:20px; border:1px solid black;">
     </div>
 </form>
 

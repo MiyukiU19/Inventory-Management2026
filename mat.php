@@ -31,14 +31,14 @@ if(!empty($_POST['action'])){
 <main class="page-container mat-list-page">
 
 <div class="hd">
-    <button type="button" class="b mat-edit-button" style="margin-left:23px" onclick="location.href='menu.php'">戻る</button>
+    <button type="button" class="b mat-edit-button" style="margin-left:23px" onclick="location.href='menu.php'">❮</button>
     <h1>マット一覧</h1>
 </div>
 <section class="card mat-list-card">
             <div class="mat-list-footer">
-        <a class="b p mat-add-button" href="mat-add.php">
-            ＋ 登録
-        </a>
+        <button type="button" class="mat-edit-button" style="margin-bottom: 30px;" onclick="location.href='mat-add.php'">
+            登録
+        </button>
     </div>
 
     <div class="mat-table-wrapper">

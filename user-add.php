@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <?php require "header.php"; ?>
 <header class="hd_h1 user-list-header"  >
-    <button type="button" class="b mat-edit-button back-button"  onclick="location.href='menu.php'" >戻る</button>
+    <button type="button" class="b mat-edit-button back-button"  onclick="location.href='admin.php'" >❮</button>
     <h1 >ユーザー登録</h1>
 </header>
 
@@ -62,10 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <div>
     <div class="user-add-buttons">
-        <button type="button" class="mat-edit-button cancel-button"
-            onclick="location.href='admin.php'">キャンセル</button>
-
-        <input type="submit" class="mat-edit-button" value="登録">
+        <input type="submit" class="mat-edit-button" style="color:white" value="登録する">
     </div>
 </div>
 </form>
