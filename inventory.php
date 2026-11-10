@@ -22,7 +22,7 @@ try {
 
 <header class="hd_h1 inventory-header">
     <button type="button" class="mat-edit-button back-button"
-        onclick="location.href='menu.php'">戻る</button>
+        onclick="location.href='menu.php'">❮</button>
     <h1>在庫一覧</h1>
 </header>
 

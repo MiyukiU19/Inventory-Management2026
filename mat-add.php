@@ -3,7 +3,7 @@
 
     <header class="hd_h1 mat-add-header">
     <button type="button" class="b mat-edit-button back-button"
-    onclick="history.back()">戻る</button>
+    onclick="history.back()">❮</button>
     <h1 class="hd_h1">マット追加</h1>
     </header>
 
@@ -34,7 +34,7 @@
     echo "</select>";
     ?>
     <div>
-        <button id="cancel-mat-add" type="button" onclick="location.href='mat.php'">キャンセル</button>
+        
         <input type="submit" value="追加する" style="color: white;">
     </div>
 </form>

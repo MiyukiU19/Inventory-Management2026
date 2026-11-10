@@ -60,7 +60,7 @@ try {
 
 <?php require "header.php"; ?>
 <header class="hd_h1 user-list-header"  >
-    <button type="button" class="b mat-edit-button back-button"  onclick="location.href='admin.php'" >戻る</button>
+    <button type="button" class="b mat-edit-button back-button"  onclick="location.href='admin.php'" >❮</button>
     <h1 >ユーザー編集</h1>
 </header>
 
@@ -94,11 +94,10 @@ try {
 
     <div class="user-edit-button">
         <!-- 削除ボタン -->
-        <button type="button" class="mat-edit-button" style="background-color: red;" onclick="if(confirm('本当に削除しますか？')) location.href='user-delete.php?id=<?php echo $user_id; ?>';">削除</button>
+        <button type="button" class="mat-edit-button" style="background-color: red; color:white" onclick="if(confirm('本当に削除しますか？')) location.href='user-delete.php?id=<?php echo $user_id; ?>';">削除</button>
         
         <div>
-            <button type="button" class="mat-edit-button cancel-button"  onclick="location.href='admin.php'">キャンセル</button>
-            <input type="submit" style="padding: 7px 12px 7px 12px; margin:10px" value="更新">
+            <input type="submit" style="padding: 7px 12px 7px 12px; margin:10px; color:white" value="更新">
         </div>
     </div>
 </form>

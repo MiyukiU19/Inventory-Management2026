@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php require "header.php"; ?>
 <header class="hd_h1 inventory-header">
     <button type="button" class="mat-edit-button back-button"
-        onclick="location.href='inventory.php'">戻る</button>
+        onclick="location.href='inventory.php'">❮</button>
     <h1>在庫登録</h1>
 </header>
 
@@ -139,8 +139,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <div>
         <div class="inventory-add-buttons">
-            <button type="button" class="cancel-button" onclick="location.href='inventory.php'">キャンセル</button>
-            <input type="submit" value="登録">
+            
+            <input type="submit"  style="background-color:#60a5fa" value="登録">
         </div>  
     </div>
 </form>

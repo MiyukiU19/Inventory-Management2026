@@ -4,7 +4,7 @@
 <main class="page-container user-list-page">
 
 <div class="hd user-list-header">
-    <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;"> 戻る</a>
+    <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;">❮</a>
     <h1 style="font-size: 25px;">ユーザー管理</h1>
 </div>
 <div class="user-list-footer">
