@@ -140,6 +140,19 @@ function getMultiGraphData($pdo, $request) {
     ];
 }
 
+function getNotConnectedMat($pdo){
+    $sql = $pdo -> query("
+        select * from possess_mat
+        where stock_id is null
+    ");
+
+    $notConnectedMat = $sql -> fetchAll(PDO::FETCH_ASSOC);
+    return [
+        "status" => "success",
+        "mat" => $notConnectedMat
+    ];
+}
+
 // action の中身によって、処理を振り分ける（switch文）
 switch ($action) {
     case 'get_graph_data':
@@ -148,6 +161,10 @@ switch ($action) {
 
     case "get_multi_graph_data":
         $response = getMultiGraphData($pdo, $request);
+        break;
+
+    case "get_not_connected_mat":
+        $response = getNotConnectedMat($pdo);
         break;
 
     default:

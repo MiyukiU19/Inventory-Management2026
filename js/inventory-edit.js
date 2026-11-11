@@ -28,7 +28,6 @@ async function createLineChart(canvas, year, month, stockId){
     const chartDataset = [];
 
     const chartData = data.datasets[0];
-    console.log(chartData);
     chartDataset.push({
         label: chartData.label,
         data: chartData.data,
@@ -104,3 +103,68 @@ nextMonthBtn.addEventListener("click", () => {
     selectedMonth.innerText = month;
     createLineChart(stockChart, selectedYear, month, stockId)
 })
+
+
+// 編集
+const borderLine = document.querySelector("#border-line");
+const containerWeight = document.querySelector("#container-weight");
+const serialId = document.querySelector("#serial-id");
+const inventoryEditBtn = document.querySelector("#inventory-edit-btn");
+let editItems = [
+    borderLine,
+    containerWeight,
+    serialId
+];
+
+let isEditing = false;
+// 在庫編集ボタンが押されたとき
+inventoryEditBtn.addEventListener("click", async () => {
+    // ボタンと編集中の要素を非表示にする
+    inventoryEditBtn.style.display = "none";
+    editItems.forEach(e => {
+        e.style.display = "none";
+    });
+
+    // 発注基準値
+    let borderLineDiv = document.createElement("div");
+    let borderLineInput = document.createElement("input");
+    borderLineInput.id = "border-line-input";
+    borderLineInput.type = "text";
+    borderLineDiv.appendChild(borderLineInput);
+    borderLineDiv.innerHTML += "個";
+    borderLine.parentElement.appendChild(borderLineDiv);
+
+    // 容器の重量
+    let containerDiv = document.createElement("div");
+    let containerInput = document.createElement("input");
+    containerInput.id = "container-input";
+    containerInput.type = "text";
+    containerDiv.appendChild(containerInput);
+    containerDiv.innerHTML += "kg";
+    containerWeight.parentElement.appendChild(containerDiv);
+
+    // マット
+    let serialSelect = document.createElement("select");
+
+    // どの在庫とも接続されていないマットを取得
+    const requestData = {
+        action: "get_not_connected_mat"
+    };
+
+    const response = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    });
+
+    const data = await response.json();
+
+    data.mat.forEach((e) => {
+        let option = document.createElement("option");
+        option.value = e.mat_id;
+        option.innerText = e.serial_id;
+
+        serialSelect.appendChild(option);
+    });
+    serialId.parentElement.appendChild(serialSelect);
+});

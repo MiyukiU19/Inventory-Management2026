@@ -46,22 +46,22 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
                     <p>在庫 <?php echo $lastStockData['quantity'] ?>個</p>
                     <p><?php echo $lastStockData['max_weight'] ?>kg</p>
                 </div>
-                <button type="button" class="mat-edit-button">在庫編集</button>
+                <button type="button" id="inventory-edit-btn" class="mat-edit-button">在庫編集</button>
             </div>
         </div>
 
         <div class="inventory-detail-info">
             <div>
                 <p>発注基準値</p>
-                <p><?php echo $stockData["border_line"]?>個</p>
+                <p id="border-line"><?php echo $stockData["border_line"]?>個</p>
             </div>
             <div>
                 <p>容器の重量</p>
-                <p><?php echo $stockData["container_weight"]?>kg</p>
+                <p id="container-weight"><?php echo $stockData["container_weight"]?>kg</p>
             </div>
             <div>
                 <p>マットのシリアル番号</p>
-                <p><?php echo $mat["serial_id"]?></p>
+                <p id="serial-id"><?php echo $mat["serial_id"]?></p>
             </div>
         </div>
     </div>
