@@ -4,7 +4,7 @@
 <form id="mat-edit-form" class="mat-add-form" action="mat.php" method="post">
 <div class="hd mat-edit-header">
     <button type="button" class="b mat-edit-button"  onclick="location.href='mat.php'">❮</button>
-    <h1 style="margin-left: 150px;">マット編集</h1>
+    <h1>マット編集</h1>
 </div>
     <div class="mat-edit-group">
         <p class="mat-edit-label">シリアル番号</p>

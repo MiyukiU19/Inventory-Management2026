@@ -6,8 +6,8 @@
 <link rel="stylesheet" href="css/choices.min.css">
 
 
-<div class="hd user-list-header">
-    <a href="menu.php" class="b mat-edit-button" style="margin-left: -350px;">❮</a>
+<div class="hd user-list-header graph-header">
+    <a href="menu.php" class="b mat-edit-button back-button">❮</a>
     <h1 style="font-size: 25px;">在庫状況</h1>
 </div>
 <form class="graph-controls">
