@@ -199,40 +199,88 @@ text-decoration: none;
 font-weight: 600;
 }
 
-
 /* スマホ対応 */
 @media (max-width: 700px) {
-.page-container {
-width: calc(100% - 24px);
-margin: 20px auto;
-}
+    .page-container {
+        width: calc(100% - 24px);
+        margin: 20px auto;
+    }
 
-.mat-list-card {
-    padding: 16px;
-}
+    .mat-list-card {
+        padding: 16px;
+    }
 
-.mat-list-page .hd h1 {
-    font-size: 22px;
-}
+    /* マット一覧ヘッダー */
+    .mat-list-page {
+        position: relative;
+    }
 
-.mat-list-heading h2 {
-    font-size: 16px;
-}
+    .mat-list-page .hd {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        gap: 0;
+        min-height: 36px;
+        margin-bottom: 12px;
+    }
 
-.mat-table th,
-.mat-table td {
-    padding: 12px 10px;
-}
+    /* 戻るボタン */
+    .mat-list-page .hd .back-button {
+        position: absolute;
+        left: 0;
+        width: 32px !important;
+        min-width: 32px;
+        height: 32px !important;
+        min-height: 32px;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        line-height: 1;
+        box-sizing: border-box;
+    }
 
-.mat-list-footer {
-    justify-content: stretch;
-}
+    /* タイトル */
+    .mat-list-page .hd h1 {
+        margin: 0;
+        font-size: 18px;
+        white-space: nowrap;
+        writing-mode: horizontal-tb;
+    }
 
-.mat-add-button {
-    width: 100%;
-    box-sizing: border-box;
-}
+    /* 登録ボタン */
+    .mat-list-page .mat-list-footer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
 
+    .mat-list-page .mat-list-footer button {
+        margin: 0 !important;
+        padding: 6px 10px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .mat-list-heading h2 {
+        font-size: 16px;
+    }
+
+    .mat-table th,
+    .mat-table td {
+        padding: 12px 10px;
+    }
+
+    .mat-add-button {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 /*
 =========================
@@ -344,11 +392,6 @@ margin: 20px auto;
     cursor: pointer;
 }
 
-/* ホバー */
-/* #cancel-mat-add:hover {
-    background-color: #334155;
-} */
-
 .mat-add-form input[type="submit"]:hover {
     background-color: #3b82f6;
 }
@@ -381,7 +424,7 @@ margin: 20px auto;
 
 }
 /* =========================
-   ユーザー一覧ページ
+ユーザー一覧ページ
 ========================= */
 
 .user-list-page {
@@ -395,9 +438,10 @@ margin: 20px auto;
     align-items: center;
     justify-content: center;
     position: relative;
-    width: min(528px, calc(100% - 72px));
+    width: 100%;
     margin: 20px auto 12px;
     box-sizing: border-box;
+    gap: 0;
 }
 
 .user-list-header h1 {
@@ -479,11 +523,17 @@ margin: 20px auto;
     margin-top: 12px;
 }
 
+/* ユーザー編集ページ */
+.user-list-header.user-edit-header {
+    width: min(528px, calc(100% - 72px));
+}
+/* ユーザー登録ページ */
+.user-list-header.user-add-header {
+    width: min(528px, calc(100% - 72px));
+}
 /* スマホ対応 */
 @media (max-width: 700px) {
-    .user-list-header {
-    width: calc(100% - 52px);
-}
+
     .user-list-page {
         margin-top: 30px;
     }
@@ -498,22 +548,57 @@ margin: 20px auto;
         font-size: 13px;
     }
 
+    .user-list-header {
+    width: 100%;
+    min-height: 36px;
+    }
     .user-list-header h1 {
         font-size: 22px;
+        white-space: nowrap;
     }
 
     .user-list-header .back-button {
-        padding: 8px 10px;
+        left: 0;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-size: 12px;
+        box-sizing: border-box;
     }
+
+    /* ユーザー編集ページ */
+    .user-list-header.user-edit-header {
+        width: calc(100% - 52px);
+    }
+    /* ユーザー登録ページ */
+    .user-list-header.user-add-header {
+        width: calc(100% - 52px);
+}
 }
 /* マット編集画面 */
 #mat-edit-form {
     max-width: 560px;
 }
 .mat-edit-header {
-    gap: 10px;
+    display: flex;
+    justify-content: center;
     align-items: center;
+    position: relative;
+    gap: 0;
+}
+
+.mat-edit-header h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.mat-edit-header button {
+    position: absolute;
+    left: 0;
 }
 /* ユーザー編集画面 */
 #user-edit-form input[type="text"] {
@@ -571,29 +656,63 @@ margin: 20px auto;
 }
 /* 在庫一覧画面 */
 
+/* ヘッダー */
 .inventory-header {
+    width: min(100% - 32px, 1000px);
+    margin: 30px auto 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    box-sizing: border-box;
 }
 
 .inventory-header h1 {
     margin: 0;
 }
 
+/* 戻るボタン */
 .inventory-header .back-button {
     position: absolute;
-    left: max(0px, calc((100% - 560px) / 2));
+    left: 0;
+}
+
+/* スマホ対応 */
+@media (max-width: 700px) {
+    .inventory-header {
+        width: calc(100% - 32px);
+        min-height: 36px;
+        margin: 20px auto 12px;
+    }
+
+    .inventory-header .back-button {
+        left: 0;
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+
+    .inventory-header h1 {
+        font-size: 22px;
+        white-space: nowrap;
+    }
 }
 
 .inventory-controls {
-    width: min(560px, calc(100% - 40px));
+    width: min(100% - 32px, 1000px);
     margin: 30px auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    box-sizing: border-box;
 }
 
 .inventory-controls form {
@@ -602,10 +721,11 @@ margin: 20px auto;
 }
 
 .inventory-item {
-    width: min(560px, calc(100% - 40px));
+    width: min(100% - 32px, 1000px);
     margin: 12px auto;
     border: 1px solid var(--bd, #e2e8f0);
     border-radius: 8px;
+    box-sizing: border-box;
 }
 
 .inventory-item a {
@@ -632,9 +752,9 @@ margin: 20px auto;
     border: 1px solid var(--bd, #e2e8f0);
     cursor: pointer;
 }
-.inventory-detail {
+/* .inventory-detail {
     font-size: 12px;
-}
+} */
 
 /* グラフページ */
 .graph-controls {
@@ -711,6 +831,42 @@ margin: 20px auto;
     }
 }
 /* 在庫登録フォーム */
+/* 在庫登録ページのヘッダー */
+.inventory-add-header {
+    width: min(528px, calc(100% - 72px));
+    margin: 20px auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.inventory-add-header .back-button {
+    position: absolute;
+    left: 0;
+}
+
+/* スマホ対応 */
+@media (max-width: 700px) {
+    .inventory-add-header {
+        width: calc(100% - 52px);
+    }
+
+    .inventory-add-header .back-button {
+        left: 0;
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+}
 .inventory-add-form > div {
     margin-bottom: 18px;
 }
@@ -970,5 +1126,55 @@ margin: 20px auto;
     .inventory-detail-graph {
         width:calc(100% - 20px);
         margin-top:35px;
+    }
+}
+/* =========================
+グラフページのヘッダー
+========================= */
+
+/* PC画面 */
+.graph-header {
+    width: calc(100% - 80px);
+    max-width: 1000px;
+    margin: 30px auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 0;
+}
+
+.graph-header .back-button {
+    position: absolute;
+    left: 0;
+}
+
+/* スマホ画面 */
+@media (max-width: 700px) {
+    .graph-header {
+        width: calc(100% - 32px);
+        min-height: 36px;
+        margin: 20px auto 12px;
+    }
+
+    .graph-header .back-button {
+        position: absolute;
+        left: 0;
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+
+    .graph-header h1 {
+        font-size: 22px !important;
+        white-space: nowrap;
+        margin: 0;
     }
 }

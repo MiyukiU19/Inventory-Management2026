@@ -59,9 +59,11 @@ try {
 ?>
 
 <?php require "header.php"; ?>
-<header class="hd_h1 user-list-header"  >
-    <button type="button" class="b mat-edit-button back-button"  onclick="location.href='admin.php'" >❮</button>
-    <h1 >ユーザー編集</h1>
+<header class="hd_h1 user-list-header user-edit-header">
+    <button type="button"
+        class="b mat-edit-button back-button"
+        onclick="location.href='admin.php'">❮</button>
+    <h1>ユーザー編集</h1>
 </header>
 
 <!-- エラーや成功メッセージの表示 -->
