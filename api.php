@@ -153,6 +153,40 @@ function getNotConnectedMat($pdo){
     ];
 }
 
+function setUpdateInventory($pdo, $request){
+    $stockId = $request["stockId"];
+    $prevSerialId = $request["prevSerialId"];
+    $newMatId = $request["newMatId"];
+    $borderLine = $request["borderLine"];
+    $containerWeight = $request["containerWeight"];
+
+    $sql = $pdo -> prepare("
+        update inventory
+        set border_line = ?, container_weight = ?
+        where stock_id = ?
+    ");
+    $sql -> execute([$borderLine, $containerWeight, $stockId]);
+
+    // 元のマットに連携されていたstock_idをnullにして新しく連携するマットにstock_idを登録する
+    $sql = $pdo -> prepare("
+        update possess_mat
+        set stock_id = null
+        where serial_id = ?
+    ");
+    $sql -> execute([$prevSerialId]);
+
+    // 新しいマットにstock_idを割り振る
+    $sql = $pdo -> prepare("
+        update possess_mat
+        set stock_id = ?
+        where mat_id = ?
+    ");
+    $sql -> execute([$stockId,$newMatId]);
+    return [
+        "status" => "success"
+    ];
+}
+
 // action の中身によって、処理を振り分ける（switch文）
 switch ($action) {
     case 'get_graph_data':
@@ -165,6 +199,10 @@ switch ($action) {
 
     case "get_not_connected_mat":
         $response = getNotConnectedMat($pdo);
+        break;
+
+    case "set_update_inventory":
+        $response = setUpdateInventory($pdo, $request);
         break;
 
     default:

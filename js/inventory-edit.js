@@ -145,6 +145,7 @@ inventoryEditBtn.addEventListener("click", async () => {
 
     // マット
     let serialSelect = document.createElement("select");
+    serialSelect.id = "serial-select";
 
     // どの在庫とも接続されていないマットを取得
     const requestData = {
@@ -168,3 +169,50 @@ inventoryEditBtn.addEventListener("click", async () => {
     });
     serialId.parentElement.appendChild(serialSelect);
 });
+
+// 保存
+const confirmBtn = document.querySelector("#inventory-confirm-btn");
+confirmBtn.addEventListener("click", async () => {
+    let borderLineInput = document.querySelector("#border-line-input");
+    let containerInput = document.querySelector("#container-input");
+    let serialSelect = document.querySelector("#serial-select");
+    let prevSerialId = document.querySelector("#serial-id").innerText;
+
+    // まとめて非表示にするための配列
+    let editItems = [
+        borderLineInput,
+        containerInput,
+        serialSelect
+    ];
+
+    // PHPに送信(データベース編集)
+    const newBorder = borderLineInput.value;
+    const newContainerWeight = containerInput.value;
+    const newSerial = serialSelect.value;
+    const requestData = {
+        action: "set_update_inventory",
+        stockId: stockId,
+        borderLine: newBorder,
+        containerWeight: newContainerWeight,
+        prevSerialId: prevSerialId,
+        newMatId: newSerial
+    };
+
+    const response = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    });
+
+    // 元の情報を書き換え、再表示
+    const data = await response.json();
+    if(data.status == "success"){
+        editItems.forEach(e => {
+            e.style.display = "none";
+        });
+        
+    }
+})
+
+// キャンセル
+const cancelBtn =document.createElement("#inventory-cancel-btn");
