@@ -160,9 +160,6 @@ color: var(--tx, #1e293b);
 text-decoration: none;
 font-size: 13px;
 cursor: pointer;
-}
-
-.mat-edit-button {
 background: var(--bg, #f1f5f9);
 }
 
@@ -654,8 +651,6 @@ font-weight: 600;
     font-size: 13px;
     cursor: pointer;
 }
-/* 在庫一覧画面 */
-
 /* ヘッダー */
 .inventory-header {
     width: min(100% - 32px, 1000px);
@@ -745,6 +740,33 @@ font-weight: 600;
 
 .inventory-name {
     font-weight: bold;
+}
+/* 商品情報 */
+.inventory-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 在庫情報を横並びにする */
+.inventory-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    font-size: 12px;
+}
+
+/* 文字が画像側にはみ出さないようにする */
+.inventory-detail {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* 画像の幅を維持 */
+.inventory-image {
+    flex-shrink: 0;
 }
 .inventory-controls input[type="submit"] {
     border-radius: 8px;
@@ -973,7 +995,7 @@ font-weight: 600;
     margin: 0;
 }
 /* =========================
-   在庫詳細ページ
+在庫詳細ページ
 ========================= */
 
 .inventory-detail-page {
@@ -1176,5 +1198,84 @@ font-weight: 600;
         font-size: 22px !important;
         white-space: nowrap;
         margin: 0;
+    }
+}
+/* ログイン画面 */
+.login-page {
+    width: min(560px, calc(100% - 40px));
+    margin: 30px auto;
+}
+
+.login_form {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 24px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login_form p {
+    margin: 0 0 22px;
+    font-size: 15px;
+}
+
+.login_form input[type="text"],
+.login_form input[type="password"] {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.login_form .login-submit {
+    margin: 28px 0 0;
+    text-align: center;
+}
+
+.login_form input[type="submit"] {
+    width: 120px;
+    height: 40px;
+    background-color: #60a5fa;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.login_form input[type="submit"]:hover {
+    opacity: 0.8;
+}
+
+.login-error {
+    color: red;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* スマホ */
+@media (max-width: 700px) {
+    .login-page {
+        width: calc(100% - 32px);
+        margin: 20px auto;
+    }
+
+    .login_form {
+        padding: 24px 16px;
+    }
+}
+/* 在庫一覧：スマホ版ボタン調整 */
+@media (max-width: 700px) {
+    .inventory-controls .mat-edit-button {
+        font-size: 10px;
+        padding: 6px 5px;
+        white-space: nowrap;
     }
 }
