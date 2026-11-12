@@ -110,42 +110,19 @@ const borderLine = document.querySelector("#border-line");
 const containerWeight = document.querySelector("#container-weight");
 const serialId = document.querySelector("#serial-id");
 const inventoryEditBtn = document.querySelector("#inventory-edit-btn");
-let editItems = [
+const displayItems = [
     borderLine,
     containerWeight,
     serialId
 ];
 
-let isEditing = false;
 // 在庫編集ボタンが押されたとき
 inventoryEditBtn.addEventListener("click", async () => {
     // ボタンと編集中の要素を非表示にする
     inventoryEditBtn.style.display = "none";
-    editItems.forEach(e => {
+    displayItems.forEach(e => {
         e.style.display = "none";
     });
-
-    // 発注基準値
-    let borderLineDiv = document.createElement("div");
-    let borderLineInput = document.createElement("input");
-    borderLineInput.id = "border-line-input";
-    borderLineInput.type = "text";
-    borderLineDiv.appendChild(borderLineInput);
-    borderLineDiv.innerHTML += "個";
-    borderLine.parentElement.appendChild(borderLineDiv);
-
-    // 容器の重量
-    let containerDiv = document.createElement("div");
-    let containerInput = document.createElement("input");
-    containerInput.id = "container-input";
-    containerInput.type = "text";
-    containerDiv.appendChild(containerInput);
-    containerDiv.innerHTML += "kg";
-    containerWeight.parentElement.appendChild(containerDiv);
-
-    // マット
-    let serialSelect = document.createElement("select");
-    serialSelect.id = "serial-select";
 
     // どの在庫とも接続されていないマットを取得
     const requestData = {
@@ -167,23 +144,24 @@ inventoryEditBtn.addEventListener("click", async () => {
 
         serialSelect.appendChild(option);
     });
-    serialId.parentElement.appendChild(serialSelect);
+    // serialId.parentElement.appendChild(serialSelect);
 });
 
+const borderLineInput = document.querySelector("#border-line-input");
+const containerInput = document.querySelector("#container-input");
+const serialSelect = document.querySelector("#serial-select");
+// まとめて非表示にするための配列
+const editItems = [
+    borderLineInput,
+    containerInput,
+    serialSelect
+];
+
 // 保存
+const editBtns = document.querySelector("#edit-btns");
 const confirmBtn = document.querySelector("#inventory-confirm-btn");
 confirmBtn.addEventListener("click", async () => {
-    let borderLineInput = document.querySelector("#border-line-input");
-    let containerInput = document.querySelector("#container-input");
-    let serialSelect = document.querySelector("#serial-select");
     let prevSerialId = document.querySelector("#serial-id").innerText;
-
-    // まとめて非表示にするための配列
-    let editItems = [
-        borderLineInput,
-        containerInput,
-        serialSelect
-    ];
 
     // PHPに送信(データベース編集)
     const newBorder = borderLineInput.value;
@@ -207,12 +185,21 @@ confirmBtn.addEventListener("click", async () => {
     // 元の情報を書き換え、再表示
     const data = await response.json();
     if(data.status == "success"){
+        editBtns.style.display = "none";
         editItems.forEach(e => {
-            e.style.display = "none";
+            e.parentElement.style.display = "none";
         });
-        
+
+        borderLine.innerText = borderLineInput.value;
+        serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
+        containerWeight.innerText = containerInput.value;
+
+        inventoryEditBtn.style.display = "block";
+        displayItems.forEach(e => {
+            e.style.display = "block";
+        })
     }
 })
 
 // キャンセル
-const cancelBtn =document.createElement("#inventory-cancel-btn");
+// const cancelBtn =document.createElement("#inventory-cancel-btn");

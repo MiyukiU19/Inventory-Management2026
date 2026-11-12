@@ -33,7 +33,6 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
 </header>
 
 <main class="page-container inventory-detail-page">
-
     <div class="inventory-detail-top">
         <div class="inventory-detail-product">
             <!-- 画像 -->
@@ -49,7 +48,7 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
                 <button type="button" id="inventory-edit-btn" class="mat-edit-button">在庫編集</button>
 
                 <!-- 保存とキャンセルボタン(編集ボタンが押されるまでは非表示) -->
-                <div>
+                <div id="edit-btns">
                     <button id="inventory-confirm-btn">保存</button>
                     <button id="inventory-cancel-btn">キャンセル</button>
                 </div>
@@ -60,14 +59,29 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             <div>
                 <p>発注基準値</p>
                 <p id="border-line"><?php echo $stockData["border_line"]?>個</p>
+
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div>
+                    <input type="text" id="border-line-input">個
+                </div>
             </div>
             <div>
                 <p>容器の重量</p>
                 <p id="container-weight"><?php echo $stockData["container_weight"]?>kg</p>
+
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div>
+                    <input type="text" id="container-input">kg
+                </div>
             </div>
             <div>
                 <p>マットのシリアル番号</p>
                 <p id="serial-id"><?php echo $mat["serial_id"]?></p>
+
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div>
+                    <select id="serial-select"></select>
+                </div>
             </div>
         </div>
     </div>
