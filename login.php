@@ -45,26 +45,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
 ?>
 
 <?php require "header.php"; ?>
+
 <header>
-    <h1 class="hd_h1">ログイン</h1>
+    <h1 class="hd_h1" style="font-size:33px;">ログイン</h1>
 </header>
 
-<!-- エラーメッセージがある場合に赤字で表示 -->
-<?php if (!empty($error_message)): ?>
-    <p style="color: red;"><?php echo htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'); ?></p>
-<?php endif; ?>
+<main class="login-page">
 
-<form action=""  class= "login_form" method="post">
-    <p>
-        ユーザー名<br>
-        <input type="text" name="user-name"><br>
-    </p>
-    <p>
-        パスワード<br>
-        <input type="password" name="password"><br>
-    </p>
-    <p>
-        <input type="submit" value="ログイン">
-    </p>
-</form>
+    
+
+    <form action="" class="login_form" method="post">
+
+        <p>
+            ユーザー名<br>
+            <input type="text" name="user-name">
+        </p>
+
+        <p>
+            パスワード<br>
+            <input type="password" name="password">
+        </p>
+    <!-- エラーメッセージ -->
+    <?php if (!empty($error_message)): ?>
+        <p class="login-error">
+            <?php echo htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'); ?>
+        </p>
+    <?php endif; ?>
+        <p class="login-submit">
+            <input type="submit" value="ログイン">
+        </p>
+
+    </form>
+
+</main>
+
 <?php require "footer.php"; ?>
