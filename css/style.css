@@ -1279,3 +1279,49 @@ font-weight: 600;
         white-space: nowrap;
     }
 }
+/* グラフ画面：スマホ版の配置 */
+@media (max-width: 700px) {
+
+    /* 商品選択・期間・前年比を2段にする */
+    .graph-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    /* 商品選択を1段目いっぱいにする */
+    .graph-controls #stocks {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* 期間・前年比 */
+    .graph-controls > div {
+        min-width: 0;
+    }
+
+    /* 商品選択欄の幅 */
+    .graph-controls .choices {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+@media (max-width: 700px) {
+    .inventory-controls > .mat-edit-button {
+        min-width: 70px;
+        height: 38px;
+        font-size: 13px;
+        padding: 0 10px;
+        text-align: center;
+    }
+}
+/* グラフ画面：前年比チェックボックス */
+#check-last-year {
+    appearance: auto;
+    -webkit-appearance: checkbox;
+    width: 20px;
+    height: 20px;
+    accent-color: #007bff;
+    cursor: pointer;
+}
