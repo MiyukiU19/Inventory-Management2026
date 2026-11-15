@@ -159,13 +159,14 @@ function setUpdateInventory($pdo, $request){
     $newMatId = $request["newMatId"];
     $borderLine = $request["borderLine"];
     $containerWeight = $request["containerWeight"];
+    $amount = $request["amount"];
 
     $sql = $pdo -> prepare('
         update inventory
-        set border_line = ?, container_weight = ?
+        set border_line = ?, container_weight = ?, amount = ?
         where stock_id = ?
     ');
-    $sql -> execute([$borderLine, $containerWeight, $stockId]);
+    $sql -> execute([$borderLine, $containerWeight, $amount, $stockId]);
 
     // 元のマットに連携されていたstock_idをnullにして新しく連携するマットにstock_idを登録する
     $sql = $pdo -> prepare("

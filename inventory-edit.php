@@ -59,9 +59,9 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             <div>
                 <p>発注基準値</p>
                 <div>
-                    <p id="border-line">
-                        <?php echo $stockData["border_line"]?>個
-                    </p>
+                    <div id="border-line">
+                        <?php echo $stockData["border_line"]?>
+                    </div>個
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
@@ -72,9 +72,9 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             <div>
                 <p>容器の重量</p>
                 <div>
-                    <p id="container-weight">
-                        <?php echo $stockData["container_weight"]?>kg
-                    </p>
+                    <div id="container-weight">
+                        <?php echo $stockData["container_weight"]?>
+                    </div>kg
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
@@ -105,9 +105,9 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             <div>
                 <p>一つ当たりの金額</p>
                 <div>
-                    <p id="amount">
-                        <?php echo $stockData["amount"] ?>円
-                    </p>
+                    <div id="amount">
+                        <?php echo $stockData["amount"] ?>
+                    </div>円
                 </div>
                 <div style="display: none;">
                     <input id="amount-input">円

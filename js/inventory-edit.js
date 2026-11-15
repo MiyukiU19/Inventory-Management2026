@@ -109,11 +109,13 @@ nextMonthBtn.addEventListener("click", () => {
 const borderLine = document.querySelector("#border-line");
 const containerWeight = document.querySelector("#container-weight");
 const serialId = document.querySelector("#serial-id");
+const amount = document.querySelector("#amount");
 const inventoryEditBtn = document.querySelector("#inventory-edit-btn");
 const displayItems = [
     borderLine,
     containerWeight,
-    serialId
+    serialId,
+    amount
 ];
 
 // 在庫編集ボタンが押されたとき
@@ -121,7 +123,7 @@ inventoryEditBtn.addEventListener("click", async () => {
     // ボタンと編集中の要素を非表示にする
     inventoryEditBtn.style.display = "none";
     displayItems.forEach(e => {
-        e.style.display = "none";
+        e.parentElement.style.display = "none";
     });
 
     // 編集用のテキストボックスなどを表示する
@@ -155,30 +157,34 @@ inventoryEditBtn.addEventListener("click", async () => {
 const borderLineInput = document.querySelector("#border-line-input");
 const containerInput = document.querySelector("#container-input");
 const serialSelect = document.querySelector("#serial-select");
+const amountInput = document.querySelector("#amount-input");
 // まとめて非表示にするための配列
 const editItems = [
     borderLineInput,
     containerInput,
-    serialSelect
+    serialSelect,
+    amountInput
 ];
 
 // 保存
 const editBtns = document.querySelector("#edit-btns");
 const confirmBtn = document.querySelector("#inventory-confirm-btn");
 confirmBtn.addEventListener("click", async () => {
-    let prevMatId = document.querySelector("#hidden-mat-id").innerText;
+    let prevMatId = Number(document.querySelector("#hidden-mat-id").value);
 
     // PHPに送信(データベース編集)
     const newBorder = borderLineInput.value;
     const newContainerWeight = containerInput.value;
     const newMatId = serialSelect.value;
+    const newAmount = amountInput.value;
     const requestData = {
         action: "set_update_inventory",
         stockId: stockId,
         borderLine: newBorder,
         containerWeight: newContainerWeight,
         prevMatId: prevMatId,
-        newMatId: newMatId
+        newMatId: newMatId,
+        amount: newAmount
     };
 
     const response = await fetch('api.php', {
@@ -199,10 +205,11 @@ confirmBtn.addEventListener("click", async () => {
         serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
         containerWeight.innerText = containerInput.value;
         prevMatId.innerText = newMatId;
+        amount.innerText = newAmount;
 
         inventoryEditBtn.style.display = "block";
         displayItems.forEach(e => {
-            e.style.display = "block";
+            e.parentElement.style.display = "block";
         })
     }
 })
