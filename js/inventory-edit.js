@@ -239,4 +239,21 @@ confirmBtn.addEventListener("click", async () => {
 })
 
 // キャンセル
-// const cancelBtn =document.createElement("#inventory-cancel-btn");
+const cancelBtn =document.querySelector("#inventory-cancel-btn");
+cancelBtn.addEventListener("click", () => {
+    // 保存・キャンセルボタンを非表示
+    editBtns.style.display = "none";
+
+    // 編集用の要素を非表示
+    editItems.forEach(e => {
+        e.parentElement.style.display = "none";
+    });
+
+    // 元のデータを再表示
+    displayItems.forEach(e => {
+        e.parentElement.style.display = "block";
+    });
+
+    // 編集ボタンを再表示
+    inventoryEditBtn.style.display = "block";
+});
