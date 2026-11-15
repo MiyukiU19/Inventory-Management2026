@@ -249,6 +249,8 @@ cancelBtn.addEventListener("click", () => {
         e.parentElement.style.display = "none";
     });
 
+    serialSelect.innerHTML = "";
+
     // 元のデータを再表示
     displayItems.forEach(e => {
         e.parentElement.style.display = "block";
