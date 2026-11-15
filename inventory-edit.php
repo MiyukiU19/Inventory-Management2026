@@ -58,29 +58,59 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
         <div class="inventory-detail-info">
             <div>
                 <p>発注基準値</p>
-                <p id="border-line"><?php echo $stockData["border_line"]?>個</p>
+                <div>
+                    <p id="border-line">
+                        <?php echo $stockData["border_line"]?>個
+                    </p>
+                </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div>
+                <div style="display: none;">
                     <input type="text" id="border-line-input">個
                 </div>
             </div>
             <div>
                 <p>容器の重量</p>
-                <p id="container-weight"><?php echo $stockData["container_weight"]?>kg</p>
+                <div>
+                    <p id="container-weight">
+                        <?php echo $stockData["container_weight"]?>kg
+                    </p>
+                </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div>
+                <div style="display: none;">
                     <input type="text" id="container-input">kg
                 </div>
             </div>
             <div>
                 <p>マットのシリアル番号</p>
-                <p id="serial-id"><?php echo $mat["serial_id"]?></p>
+                <div>
+                    <p id="serial-id">
+                        <?php echo $mat["serial_id"]?>
+                    </p>
+                </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div>
+                <div style="display: none;">
                     <select id="serial-select"></select>
+                </div>
+
+                <!-- マットID -->
+                <div style="display: none;">
+                    <input id="hidden-mat-id" type="hidden" value="
+                        <?php echo $mat["mat_id"] ?>
+                    ">
+                </div>
+            </div>
+            <div>
+                <p>一つ当たりの金額</p>
+                <div>
+                    <p id="amount">
+                        <?php echo $stockData["amount"] ?>円
+                    </p>
+                </div>
+                <div style="display: none;">
+                    <input id="amount-input">円
                 </div>
             </div>
         </div>

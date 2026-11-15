@@ -124,6 +124,12 @@ inventoryEditBtn.addEventListener("click", async () => {
         e.style.display = "none";
     });
 
+    // 編集用のテキストボックスなどを表示する
+    editBtns.style.display = "block";
+    editItems.forEach(e => {
+        e.parentElement.style.display = "block";
+    })
+
     // どの在庫とも接続されていないマットを取得
     const requestData = {
         action: "get_not_connected_mat"
@@ -144,7 +150,6 @@ inventoryEditBtn.addEventListener("click", async () => {
 
         serialSelect.appendChild(option);
     });
-    // serialId.parentElement.appendChild(serialSelect);
 });
 
 const borderLineInput = document.querySelector("#border-line-input");
@@ -161,19 +166,19 @@ const editItems = [
 const editBtns = document.querySelector("#edit-btns");
 const confirmBtn = document.querySelector("#inventory-confirm-btn");
 confirmBtn.addEventListener("click", async () => {
-    let prevSerialId = document.querySelector("#serial-id").innerText;
+    let prevMatId = document.querySelector("#hidden-mat-id").innerText;
 
     // PHPに送信(データベース編集)
     const newBorder = borderLineInput.value;
     const newContainerWeight = containerInput.value;
-    const newSerial = serialSelect.value;
+    const newMatId = serialSelect.value;
     const requestData = {
         action: "set_update_inventory",
         stockId: stockId,
         borderLine: newBorder,
         containerWeight: newContainerWeight,
-        prevSerialId: prevSerialId,
-        newMatId: newSerial
+        prevMatId: prevMatId,
+        newMatId: newMatId
     };
 
     const response = await fetch('api.php', {
@@ -193,6 +198,7 @@ confirmBtn.addEventListener("click", async () => {
         borderLine.innerText = borderLineInput.value;
         serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
         containerWeight.innerText = containerInput.value;
+        prevMatId.innerText = newMatId;
 
         inventoryEditBtn.style.display = "block";
         displayItems.forEach(e => {

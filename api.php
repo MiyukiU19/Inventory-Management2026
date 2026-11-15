@@ -155,25 +155,25 @@ function getNotConnectedMat($pdo){
 
 function setUpdateInventory($pdo, $request){
     $stockId = $request["stockId"];
-    $prevSerialId = $request["prevSerialId"];
+    $prevMatId = $request["prevMatId"];
     $newMatId = $request["newMatId"];
     $borderLine = $request["borderLine"];
     $containerWeight = $request["containerWeight"];
 
-    $sql = $pdo -> prepare("
+    $sql = $pdo -> prepare('
         update inventory
         set border_line = ?, container_weight = ?
         where stock_id = ?
-    ");
+    ');
     $sql -> execute([$borderLine, $containerWeight, $stockId]);
 
     // 元のマットに連携されていたstock_idをnullにして新しく連携するマットにstock_idを登録する
     $sql = $pdo -> prepare("
         update possess_mat
-        set stock_id = null
-        where serial_id = ?
+        set stock_id = NULL
+        where mat_id = ?;
     ");
-    $sql -> execute([$prevSerialId]);
+    $sql -> execute([$prevMatId]);
 
     // 新しいマットにstock_idを割り振る
     $sql = $pdo -> prepare("
