@@ -55,63 +55,46 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             </div>
         </div>
 
+        <!-- このdivの子要素にインデントを付けるとバグる可能性があります -->
         <div class="inventory-detail-info">
             <div>
                 <p>発注基準値</p>
                 <div>
-                    <div id="border-line">
-                        <?php echo $stockData["border_line"]?>
-                    </div>個
+                    <div id="border-line"><?php echo $stockData["border_line"]?></div>個
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div style="display: none;">
-                    <input type="text" id="border-line-input">個
-                </div>
+                <div style="display: none;"><input type="text" id="border-line-input">個</div>
             </div>
             <div>
                 <p>容器の重量</p>
                 <div>
-                    <div id="container-weight">
-                        <?php echo $stockData["container_weight"]?>
-                    </div>kg
+                    <div id="container-weight"><?php echo $stockData["container_weight"]?></div>kg
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div style="display: none;">
-                    <input type="text" id="container-input">kg
-                </div>
+                <div style="display: none;"><input type="text" id="container-input">kg</div>
             </div>
             <div>
                 <p>マットのシリアル番号</p>
                 <div>
-                    <p id="serial-id">
-                        <?php echo $mat["serial_id"]?>
-                    </p>
+                    <p id="serial-id"><?php echo $mat["serial_id"]?></p>
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div style="display: none;">
-                    <select id="serial-select"></select>
-                </div>
+                <div style="display: none;"><select id="serial-select"></select></div>
 
                 <!-- マットID -->
                 <div style="display: none;">
-                    <input id="hidden-mat-id" type="hidden" value="
-                        <?php echo $mat["mat_id"] ?>
-                    ">
+                    <input id="hidden-mat-id" type="hidden" value="<?php echo $mat["mat_id"] ?>">
                 </div>
             </div>
             <div>
                 <p>一つ当たりの金額</p>
                 <div>
-                    <div id="amount">
-                        <?php echo $stockData["amount"] ?>
-                    </div>円
+                    <div id="amount"><?php echo $stockData["amount"] ?></div>円
                 </div>
-                <div style="display: none;">
-                    <input id="amount-input">円
-                </div>
+                <div style="display: none;"><input id="amount-input">円</div>
             </div>
         </div>
     </div>

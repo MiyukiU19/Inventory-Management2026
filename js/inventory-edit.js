@@ -126,6 +126,11 @@ inventoryEditBtn.addEventListener("click", async () => {
         e.parentElement.style.display = "none";
     });
 
+    // 元のデータを編集用テキストボックスに入れる
+    borderLineInput.value = borderLine.innerText;
+    containerInput.value = containerWeight.innerText;
+    amountInput.value = amount.innerText;
+
     // 編集用のテキストボックスなどを表示する
     editBtns.style.display = "block";
     editItems.forEach(e => {
