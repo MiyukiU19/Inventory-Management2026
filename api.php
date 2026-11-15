@@ -188,6 +188,21 @@ function setUpdateInventory($pdo, $request){
     ];
 }
 
+// $requestに入っているstock_idに紐づけられたmat_idを返す
+function getConnectedMatById($pdo, $request){
+    $stockId = $request['stock_id'];
+    $sql = $pdo -> prepare("
+        select * from possess_mat
+        where stock_id = ?
+    ");
+    $sql -> execute([$stockId]);
+    $mat = $sql -> fetch(PDO::FETCH_ASSOC);
+    return [
+        "status" => "success",
+        "mat" => $mat
+    ];
+}
+
 // action の中身によって、処理を振り分ける（switch文）
 switch ($action) {
     case 'get_graph_data':
@@ -204,6 +219,10 @@ switch ($action) {
 
     case "set_update_inventory":
         $response = setUpdateInventory($pdo, $request);
+        break;
+
+    case "get_connected_mat_by_id":
+        $response = getConnectedMatById($pdo, $request);
         break;
 
     default:

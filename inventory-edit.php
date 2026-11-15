@@ -48,7 +48,7 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
                 <button type="button" id="inventory-edit-btn" class="mat-edit-button">在庫編集</button>
 
                 <!-- 保存とキャンセルボタン(編集ボタンが押されるまでは非表示) -->
-                <div id="edit-btns">
+                <div id="edit-btns" style="display: none;">
                     <button id="inventory-confirm-btn">保存</button>
                     <button id="inventory-cancel-btn">キャンセル</button>
                 </div>

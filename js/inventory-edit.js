@@ -133,19 +133,38 @@ inventoryEditBtn.addEventListener("click", async () => {
     })
 
     // どの在庫とも接続されていないマットを取得
-    const requestData = {
+    let requestData = {
         action: "get_not_connected_mat"
     };
 
-    const response = await fetch('api.php', {
+    let response = await fetch('api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
     });
 
-    const data = await response.json();
+    const notConnectData = await response.json();
 
-    data.mat.forEach((e) => {
+    // 在庫idに紐づけられたマットidを取得
+    requestData = {
+        action: "get_connected_mat_by_id",
+        stock_id: stockId
+    }
+
+    response = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    });
+
+    const connectData = await response.json();
+    let option = document.createElement("option");
+    option.value = connectData.mat.mat_id;
+    option.innerText = connectData.mat.serial_id;
+    option.selected = true;
+    serialSelect.appendChild(option);
+
+    notConnectData.mat.forEach((e) => {
         let option = document.createElement("option");
         option.value = e.mat_id;
         option.innerText = e.serial_id;
