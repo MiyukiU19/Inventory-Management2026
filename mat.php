@@ -15,10 +15,11 @@ if(!empty($_POST['action'])){
         case "edit":
             $matId = (int)$_POST['id'];
             $serial = $_POST['serial'];
+            $identificationId = $_POST['identification_id'];
             $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
             $size = (int)$_POST['size'];
-            $sql = $pdo -> prepare("update possess_mat set serial_id=?, stock_id=?, mat_spec_id=? where mat_id=?");
-            $sql -> execute([$serial, $inventory, $size, $matId]);
+            $sql = $pdo -> prepare("update possess_mat set serial_id=?, identification_id=?, stock_id=?, mat_spec_id=? where mat_id=?");
+            $sql -> execute([$serial, $identificationId, $inventory, $size, $matId]);
             break;
         case "delete":
             $matId = (int)$_POST['id'];
