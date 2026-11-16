@@ -84,13 +84,13 @@ echo "<div class='inventory-info'>";
 echo "<span class='inventory-name'>{$row['stock_name']}</span>";
 
 // 合計金額
-$totalQuantity = $stockData['quantity'] * $stockData['amount'];
+$totalAmount = $stockData['quantity'] * $stockData['amount'];
 
 // 2行目：在庫・総重量・合計金額
 echo "<div class='inventory-details'>";
-echo "<span class='inventory-detail'>在庫：{$stockData['amount']}個</span>";
+echo "<span class='inventory-detail'>在庫：{$stockData['quantity']}個</span>";
 echo "<span class='inventory-detail'>総重量：{$stockData['max_weight']}kg</span>";
-echo "<span class='inventory-detail'>合計：{$totalQuantity}円</span>";
+echo "<span class='inventory-detail'>合計：{$totalAmount}円</span>";
 echo "</div>";
 
 echo "</div>";

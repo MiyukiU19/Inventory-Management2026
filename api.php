@@ -140,6 +140,69 @@ function getMultiGraphData($pdo, $request) {
     ];
 }
 
+function getNotConnectedMat($pdo){
+    $sql = $pdo -> query("
+        select * from possess_mat
+        where stock_id is null
+    ");
+
+    $notConnectedMat = $sql -> fetchAll(PDO::FETCH_ASSOC);
+    return [
+        "status" => "success",
+        "mat" => $notConnectedMat
+    ];
+}
+
+function setUpdateInventory($pdo, $request){
+    $stockId = $request["stockId"];
+    $prevMatId = $request["prevMatId"];
+    $newMatId = $request["newMatId"];
+    $borderLine = $request["borderLine"];
+    $containerWeight = $request["containerWeight"];
+    $amount = $request["amount"];
+
+    $sql = $pdo -> prepare('
+        update inventory
+        set border_line = ?, container_weight = ?, amount = ?
+        where stock_id = ?
+    ');
+    $sql -> execute([$borderLine, $containerWeight, $amount, $stockId]);
+
+    // 元のマットに連携されていたstock_idをnullにして新しく連携するマットにstock_idを登録する
+    $sql = $pdo -> prepare("
+        update possess_mat
+        set stock_id = NULL
+        where mat_id = ?;
+    ");
+    $sql -> execute([$prevMatId]);
+
+    // 新しいマットにstock_idを割り振る
+    $sql = $pdo -> prepare("
+        update possess_mat
+        set stock_id = ?
+        where mat_id = ?
+    ");
+    $sql -> execute([$stockId,$newMatId]);
+    return [
+        "status" => "success"
+    ];
+}
+
+// $requestに入っているstock_idに紐づけられたmat_idを返す
+function getConnectedMatById($pdo, $request){
+    $stockId = $request['stock_id'];
+    $sql = $pdo -> prepare("
+        select * from possess_mat
+        where stock_id = ?
+    ");
+    $sql -> execute([$stockId]);
+    $mat = $sql -> fetch(PDO::FETCH_ASSOC);
+    return [
+        "status" => "success",
+        "mat" => $mat
+    ];
+}
+
 // action の中身によって、処理を振り分ける（switch文）
 switch ($action) {
     case 'get_graph_data':
@@ -148,6 +211,18 @@ switch ($action) {
 
     case "get_multi_graph_data":
         $response = getMultiGraphData($pdo, $request);
+        break;
+
+    case "get_not_connected_mat":
+        $response = getNotConnectedMat($pdo);
+        break;
+
+    case "set_update_inventory":
+        $response = setUpdateInventory($pdo, $request);
+        break;
+
+    case "get_connected_mat_by_id":
+        $response = getConnectedMatById($pdo, $request);
         break;
 
     default:
