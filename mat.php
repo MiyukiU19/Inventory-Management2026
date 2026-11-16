@@ -6,10 +6,11 @@ if(!empty($_POST['action'])){
     switch($_POST['action']){
         case "add":
             $serial = $_POST['serial'];
+            $identificationId = $_POST['identification_id'];
             $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
             $size = (int)$_POST['size'];
-            $sql = $pdo -> prepare("insert into possess_mat values (null, ?, ?, ?)");
-            $sql -> execute([$serial, $inventory, $size]);
+            $sql = $pdo -> prepare("insert into possess_mat values (null, ?, ?, ?, ?)");
+            $sql -> execute([$serial, $identificationId, $inventory, $size]);
             break;
         case "edit":
             $matId = (int)$_POST['id'];
