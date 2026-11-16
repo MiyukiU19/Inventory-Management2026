@@ -23,6 +23,24 @@ $lastStockData = $lastStockSql -> fetch(PDO::FETCH_ASSOC);
 $matSql = $pdo -> prepare("select * from possess_mat where stock_id = ?");
 $matSql -> execute([$stockId]);
 $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
+
+// 小数点以下2桁以降の0を削除する、小数点以下が存在しない場合.0を付ける
+function formatDecimalFlexible($num) {
+    // 小数点を含まない整数なら .0 をつけて返す
+    if (strpos((string)$num, '.') === 0) {
+        return $num . '.0';
+    }
+
+    // 末尾の0を削除（例: 123.00 -> 123.）
+    $trimmed = rtrim((string)$num, '0');
+
+    // 末尾が小数点になってしまった場合（例: 123.00 -> 123.）は 0 を足す
+    if (substr($trimmed, -1) === '.') {
+        return $trimmed . '0';
+    }
+
+    return $trimmed;
+}
 ?>
 <script src="js/chart.js" defer></script>
 <script src="js/inventory-edit.js" defer></script>
@@ -43,7 +61,9 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             <div class="inventory-detail-stock">
                 <div>
                     <p>在庫 <?php echo $lastStockData['quantity'] ?>個</p>
-                    <p><?php echo $lastStockData['max_weight'] ?>kg</p>
+                    <p><?php
+                    echo formatDecimalFlexible($lastStockData['max_weight']);
+                    ?>kg</p>
                 </div>
                 <button type="button" id="inventory-edit-btn" class="mat-edit-button">在庫編集</button>
 
@@ -69,7 +89,9 @@ $mat = $matSql -> fetch(PDO::FETCH_ASSOC);
             <div>
                 <p>容器の重量</p>
                 <div>
-                    <div id="container-weight"><?php echo $stockData["container_weight"]?></div>kg
+                    <div id="container-weight"><?php
+                    echo formatDecimalFlexible($stockData["container_weight"]);
+                    ?></div>kg
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->

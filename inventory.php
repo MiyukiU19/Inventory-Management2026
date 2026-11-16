@@ -19,6 +19,24 @@ try {
 } catch (Throwable $e) {
     $error_message = "データ取得エラー: " . $e->getMessage();
 }
+
+// 小数点以下2桁以降の0を削除する、小数点以下が存在しない場合.0を付ける
+function formatDecimalFlexible($num) {
+    // 小数点を含まない整数なら .0 をつけて返す
+    if (strpos((string)$num, '.') === 0) {
+        return $num . '.0';
+    }
+
+    // 末尾の0を削除（例: 123.00 -> 123.）
+    $trimmed = rtrim((string)$num, '0');
+
+    // 末尾が小数点になってしまった場合（例: 123.00 -> 123.）は 0 を足す
+    if (substr($trimmed, -1) === '.') {
+        return $trimmed . '0';
+    }
+
+    return $trimmed;
+}
 ?>
 
 <header class="hd_h1 inventory-header">
@@ -86,10 +104,13 @@ echo "<span class='inventory-name'>{$row['stock_name']}</span>";
 // 合計金額
 $totalAmount = $stockData['quantity'] * $stockData['amount'];
 
+// 総重量の末尾の0を調整
+$maxWeight = formatDecimalFlexible($stockData['max_weight']);
+
 // 2行目：在庫・総重量・合計金額
 echo "<div class='inventory-details'>";
 echo "<span class='inventory-detail'>在庫：{$stockData['quantity']}個</span>";
-echo "<span class='inventory-detail'>総重量：{$stockData['max_weight']}kg</span>";
+echo "<span class='inventory-detail'>総重量：{$maxWeight}kg</span>";
 echo "<span class='inventory-detail'>合計：{$totalAmount}円</span>";
 echo "</div>";
 
