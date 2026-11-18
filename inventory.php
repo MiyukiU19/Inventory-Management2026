@@ -1,6 +1,5 @@
-<?php session_start(); ?>
-<?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php require "config/database.php"; ?>
 
 <?php
 // 検索キーワードが送信されたか判定

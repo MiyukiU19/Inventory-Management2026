@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+<?php require "header.php"; ?>
 <?php require "config/database.php"; ?>
 <?php
 $error_message = "";
@@ -75,7 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<?php require "header.php"; ?>
 <header class="hd_h1 inventory-header inventory-add-header">
     <button type="button" class="mat-edit-button back-button"
         onclick="location.href='inventory.php'">❮</button>

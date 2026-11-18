@@ -1,5 +1,5 @@
-<?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php require "config/database.php"; ?>
 <script src="js/chart.js" defer></script>
 <script src="js/choices.min.js" defer></script>
 <script src="js/graph.js" defer></script>

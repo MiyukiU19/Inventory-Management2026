@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+<?php require "header.php"; ?>
 <?php require "config/database.php"; ?>
 <?php
 // 1. URLのパラメータ（?id=〜）から削除するユーザーのIDを取得

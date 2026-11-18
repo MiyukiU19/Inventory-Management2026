@@ -1,5 +1,5 @@
-<?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php require "config/database.php"; ?>
 
     <header class="hd_h1 mat-add-header">
     <button type="button" class="b mat-edit-button back-button"

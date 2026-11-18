@@ -1,5 +1,5 @@
-<?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php require "config/database.php"; ?>
 <?php
 // マット追加ページから飛んできたとき
 if(!empty($_POST['action'])){

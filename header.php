@@ -9,3 +9,4 @@
     <title>在庫管理アプリ</title>
 </head>
 <body>
+<?php session_start(); ?>

@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+<?php require "header.php"; ?>
 <?php require "config/database.php"; ?>
 <?php
 $error_message = "";
@@ -58,7 +58,6 @@ try {
 }
 ?>
 
-<?php require "header.php"; ?>
 <header class="hd_h1 user-list-header user-edit-header">
     <button type="button"
         class="b mat-edit-button back-button"
