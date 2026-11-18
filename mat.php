@@ -6,18 +6,20 @@ if(!empty($_POST['action'])){
     switch($_POST['action']){
         case "add":
             $serial = $_POST['serial'];
+            $identificationId = $_POST['identification_id'];
             $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
             $size = (int)$_POST['size'];
-            $sql = $pdo -> prepare("insert into possess_mat values (null, ?, ?, ?)");
-            $sql -> execute([$serial, $inventory, $size]);
+            $sql = $pdo -> prepare("insert into possess_mat values (null, ?, ?, ?, ?)");
+            $sql -> execute([$serial, $identificationId, $inventory, $size]);
             break;
         case "edit":
             $matId = (int)$_POST['id'];
             $serial = $_POST['serial'];
+            $identificationId = $_POST['identification_id'];
             $inventory = (empty($_POST['inventory'])) ? null : (int)$_POST['inventory'];
             $size = (int)$_POST['size'];
-            $sql = $pdo -> prepare("update possess_mat set serial_id=?, stock_id=?, mat_spec_id=? where mat_id=?");
-            $sql -> execute([$serial, $inventory, $size, $matId]);
+            $sql = $pdo -> prepare("update possess_mat set serial_id=?, identification_id=?, stock_id=?, mat_spec_id=? where mat_id=?");
+            $sql -> execute([$serial, $identificationId, $inventory, $size, $matId]);
             break;
         case "delete":
             $matId = (int)$_POST['id'];
@@ -44,6 +46,7 @@ if(!empty($_POST['action'])){
         <table class="mat-table">
             <thead>
                 <tr>
+                    <th>識別番号</th>
                     <th>シリアル</th>
                     <th>製品</th>
                     <th class="mat-action-column"></th>
@@ -56,15 +59,19 @@ if(!empty($_POST['action'])){
                     SELECT *
                     FROM possess_mat AS pm
                     LEFT JOIN inventory AS i
-                        ON pm.stock_id = i.stock_id
+                    ON pm.stock_id = i.stock_id
                 ");
 
                 foreach ($sql as $row) {
+                    $identificationId = $row['identification_id'];
                     $serialId = $row['serial_id'];
                     $stockName = $row['stock_name'];
                     $matId = (int)$row['mat_id'];
                 ?>
                     <tr>
+                        <td>
+                            <?= $identificationId ?>
+                        </td>
                         <td>
                             <?= htmlspecialchars((string)$serialId, ENT_QUOTES, 'UTF-8') ?>
                         </td>

@@ -1,20 +1,32 @@
 let myChart = null;
 async function createLineChart(canvas, year, month, stockId){
-    const requestData = {
+    const requestGraphData = {
         action: "get_graph_data",
         stock: stockId,
         year: year,
         month: month
     };
 
-    const response = await fetch('api.php', {
+    const responseGraphData = await fetch('api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(requestGraphData)
     });
 
-    const data = await response.json();
+    const graphData = await responseGraphData.json();
 
+    const requestBorderData = {
+        action: "get_border_line",
+        stock_id: stockId
+    };
+
+    const responseBorder = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBorderData)
+    });
+
+    const borderData = await responseBorder.json();
     if (myChart) {
         myChart.destroy();
     }
@@ -27,7 +39,7 @@ async function createLineChart(canvas, year, month, stockId){
     // PHPから届いた商品のデータを、Chart.js用の配列に変換する
     const chartDataset = [];
 
-    const chartData = data.datasets[0];
+    const chartData = graphData.datasets[0];
     chartDataset.push({
         label: chartData.label,
         data: chartData.data,
@@ -40,7 +52,7 @@ async function createLineChart(canvas, year, month, stockId){
     myChart = new Chart(canvas, {
         type: 'line',
         data: {
-            labels: data.labels,
+            labels: graphData.labels,
             datasets: chartDataset // まとめて作った配列を渡す
         },
         options: {
@@ -64,6 +76,32 @@ async function createLineChart(canvas, year, month, stockId){
                         font: {
                             size: 12,
                             weight: 'normal' // デフォルトの太字を解除する
+                        }
+                    }
+                },
+                // 【ここを追加】基準線（アノテーション）の設定
+                annotation: {
+                    annotations: {
+                        // 任意の名前（line1 などでOK）
+                        line1: {
+                            type: 'line',
+                            yMin: borderData.border_line, // 縦軸（Y軸）のどの位置に線を引くか（※ここを商品の基準値の数値にする）
+                            yMax: borderData.border_line, // yMinと同じ数値を指定すると水平な線になります
+                            borderColor: 'rgba(255, 99, 132, 0.8)', // 線の色（赤系）
+                            borderWidth: 2, // 線の太さ
+                            borderDash: [6, 6], // 点線にしたい場合（実線ならこの行を消す）
+
+                            // 線のそばに「基準値：50」などのラベルを表示したい場合
+                            label: {
+                                display: true,
+                                content: `基準値: ${borderData.border_line}`,
+                                position: 'end', // ラベルの位置（'start', 'center', 'end'）
+                                backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                                color: '#fff',
+                                font: {
+                                    size: 10
+                                }
+                            }
                         }
                     }
                 }
@@ -165,14 +203,14 @@ inventoryEditBtn.addEventListener("click", async () => {
     const connectData = await response.json();
     let option = document.createElement("option");
     option.value = connectData.mat.mat_id;
-    option.innerText = connectData.mat.serial_id;
+    option.innerText = `(${connectData.mat.identification_id}) ${connectData.mat.serial_id}`;
     option.selected = true;
     serialSelect.appendChild(option);
 
     notConnectData.mat.forEach((e) => {
         let option = document.createElement("option");
         option.value = e.mat_id;
-        option.innerText = e.serial_id;
+        option.innerText = `(${e.identification_id}) ${e.serial_id}`;
 
         serialSelect.appendChild(option);
     });
@@ -235,7 +273,9 @@ confirmBtn.addEventListener("click", async () => {
         displayItems.forEach(e => {
             e.parentElement.style.display = "block";
         })
-    }
+    };
+
+    createLineChart(stockChart, selectedYear, selectedMonth.innerText, stockId);
 })
 
 // キャンセル

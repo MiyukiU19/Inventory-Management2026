@@ -44,6 +44,7 @@ function formatDecimalFlexible($num) {
 ?>
 <script src="js/chart.js" defer></script>
 <script src="js/inventory-edit.js" defer></script>
+<script src="js/chartjs-plugin-annotation.min.js" defer></script>
 <header class="hd_h1 inventory-header">
     <button type="button" class="mat-edit-button back-button"
         onclick="location.href='inventory.php'">❮</button>
@@ -98,9 +99,9 @@ function formatDecimalFlexible($num) {
                 <div style="display: none;"><input type="text" id="container-input">kg</div>
             </div>
             <div>
-                <p>マットのシリアル番号</p>
+                <p>マット番号</p>
                 <div>
-                    <p id="serial-id"><?php echo $mat["serial_id"]?></p>
+                    <p id="serial-id">(<?php echo $mat["identification_id"]?>) <?php echo $mat["serial_id"]?></p>
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->

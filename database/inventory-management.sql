@@ -54,11 +54,12 @@ CREATE TABLE inventory (
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 
--- 所有マットテーブル
+-- 所有マットテーブル (identification_idに NOT NULL と UNIQUE 制約を設定)
 CREATE TABLE possess_mat (
     mat_id INT AUTO_INCREMENT PRIMARY KEY,
     serial_id CHAR(12) NOT NULL UNIQUE,
-    stock_id INT, -- NULLを許容
+    identification_id INT NOT NULL UNIQUE,
+    stock_id INT, -- 未割り当てを表現するためNULLを許容
     mat_spec_id INT NOT NULL,
     FOREIGN KEY (stock_id) REFERENCES inventory(stock_id),
     FOREIGN KEY (mat_spec_id) REFERENCES mat_specification(mat_spec_id)
@@ -141,18 +142,18 @@ INSERT INTO inventory (stock_id, stock_name, amount, border_line, weight, contai
 (29, 'ねじロック剤', 600, 10, 50.000, 0.300, 'threadlocker.png', 04),
 (30, 'ウレタンゴムシート 3mm', 950, 25, 320.000, 2.500, 'rubber_sheet.png', 04);
 
--- 4. 所有マット (30件)
-INSERT INTO possess_mat (mat_id, serial_id, stock_id, mat_spec_id) VALUES
-(1, 'W93847102934', 1, 1), (2, 'W18475920384', 2, 2), (3, 'W82736450192', 3, 1),
-(4, 'W39485710293', 4, 3), (5, 'W58291037465', 5, 1), (6, 'W10394857621', NULL, 1), 
-(7, 'W74839201847', 7, 2), (8, 'W29384756102', 8, 1), (9, 'W85746392018', 9, 1),
-(10, 'W19283746501', 10, 1), (11, 'W47586920193', NULL, 1), (12, 'W20394857162', 12, 2), 
-(13, 'W84756102938', 13, 1), (14, 'W39485761029', 14, 2), (15, 'W58473629102', 15, 1), 
-(16, 'W10293847561', 16, 1), (17, 'W94857102938', NULL, 1), (18, 'W28374650192', 18, 1), 
-(19, 'W57483920183', 19, 1), (20, 'W19283746590', 20, 1), (21, 'W48571920384', 21, 2), 
-(22, 'W37465019283', NULL, 2), (23, 'W58694039281', 23, 3), (24, 'W29384756109', 24, 2), 
-(25, 'W84756192038', 25, 1), (26, 'W10293847569', NULL, 1), (27, 'W39485710294', 27, 1), 
-(28, 'W58473629103', 28, 1), (29, 'W93847102935', 29, 1), (30, 'W18475920385', NULL, 1);
+-- 3. 所有マット (30件) ※identification_idを1〜30に設定
+INSERT INTO possess_mat (mat_id, serial_id, identification_id, stock_id, mat_spec_id) VALUES
+(1, 'W93847102934', 1, 1, 1),     (2, 'W18475920384', 2, 2, 2),     (3, 'W82736450192', 3, 3, 1),
+(4, 'W39485710293', 4, 4, 3),     (5, 'W58291037465', 5, 5, 1),     (6, 'W10394857621', 6, NULL, 1), 
+(7, 'W74839201847', 7, 7, 2),     (8, 'W29384756102', 8, 8, 1),     (9, 'W85746392018', 9, 9, 1),
+(10, 'W19283746501', 10, 10, 1),  (11, 'W47586920193', 11, NULL, 1), (12, 'W20394857162', 12, 12, 2), 
+(13, 'W84756102938', 13, 13, 1),  (14, 'W39485761029', 14, 14, 2),  (15, 'W58473629102', 15, 15, 1), 
+(16, 'W10293847561', 16, 16, 1),  (17, 'W94857102938', 17, NULL, 1), (18, 'W28374650192', 18, 18, 1), 
+(19, 'W57483920183', 19, 19, 1),  (20, 'W19283746590', 20, 20, 1),  (21, 'W48571920384', 21, 21, 2), 
+(22, 'W37465019283', 22, NULL, 2),(23, 'W58694039281', 23, 23, 3),  (24, 'W29384756109', 24, 24, 2), 
+(25, 'W84756192038', 25, 25, 1),  (26, 'W10293847569', 26, NULL, 1), (27, 'W39485710294', 27, 27, 1), 
+(28, 'W58473629103', 28, 28, 1),  (29, 'W93847102935', 29, 29, 1),  (30, 'W18475920385', 30, NULL, 1);
 
 -- 5. 在庫履歴 (116640件: 27種類 × 各年2160時間(3ヶ月) × 2年分)
 INSERT INTO inventory_history (stock_id, stock_name, amount, update_date, quantity, weight, max_weight)
@@ -169,21 +170,18 @@ FROM (
         i.stock_id,
         i.stock_name,
         i.amount,
-        -- 各年の基準日から1時間ずつ加算
         DATE_ADD(y.start_date, INTERVAL h.hour_offset HOUR) AS update_date,
-        -- 個数を計算: 商品ごとに最大数(40〜79)と周期(72〜191時間)を変化させる
         FLOOR(
-            (40 + (i.stock_id * 7) % 40) -- 各商品の最大個数
+            (40 + (i.stock_id * 7) % 40)
             -
             (
-                ((h.hour_offset + i.stock_id * 23) % (72 + (i.stock_id * 13) % 120)) -- 前回の補充からの経過時間
+                ((h.hour_offset + i.stock_id * 23) % (72 + (i.stock_id * 13) % 120))
                 *
-                (((40 + (i.stock_id * 7) % 40) - 10) / (72 + (i.stock_id * 13) % 120)) -- 1時間あたりの減少量
+                (((40 + (i.stock_id * 7) % 40) - 10) / (72 + (i.stock_id * 13) % 120))
             )
-        ) + FLOOR(RAND() * 4) AS quantity, -- 若干のノイズ(0〜3)を追加
+        ) + FLOOR(RAND() * 4) AS quantity,
         i.weight
     FROM (
-        -- 0から2159までの連番（2160時間 = 90日分）を生成
         SELECT a.i + b.i * 10 + c.i * 100 + d.i * 1000 AS hour_offset
         FROM 
             (SELECT 0 AS i UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
@@ -192,13 +190,11 @@ FROM (
             CROSS JOIN (SELECT 0 AS i UNION ALL SELECT 1 UNION ALL SELECT 2) d
         WHERE a.i + b.i * 10 + c.i * 100 + d.i * 1000 < 2160
     ) h
-    -- 基準日を前年と今年の2つ用意する
     CROSS JOIN (
         SELECT '2022-10-01 00:00:00' AS start_date
         UNION ALL
         SELECT '2023-10-01 00:00:00' AS start_date
     ) y
-    -- 28, 29, 30 の3種類を除外した27種類に対してクロスジョイン
     CROSS JOIN (
         SELECT * FROM inventory WHERE stock_id <= 27
     ) i
