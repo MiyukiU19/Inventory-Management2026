@@ -134,11 +134,16 @@ function formatNumberKeepDecimals($num) {
         </form>
     </div>
 
-    <!-- 在庫登録ボタン -->
-    <div>
-    <button type="button" class="mat-edit-button"
-        onclick="location.href='inventory-add.php'">登録</button>
-    </div>
+    <?php
+    // 管理者のみ在庫登録ボタンを表示
+    if($_SESSION['user']['authority'] == 1){
+        echo '<!-- 在庫登録ボタン -->';
+        echo '<div>';
+        echo '<button type="button" class="mat-edit-button"';
+        echo 'onclick=', "location.href='inventory-add.php'", '>登録</button>';
+        echo '</div>';
+    }
+    ?>
 </div>
 
 
