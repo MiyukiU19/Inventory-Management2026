@@ -34,7 +34,7 @@ try {
         $params[] = $category_id;
     }
 
-    $sql = $pdo->prepare(implode('AND', $sql_parts));
+    $sql = $pdo->prepare(implode(" AND ", $sql_parts));
     $sql->execute($params);
 
 } catch (Throwable $e) {
