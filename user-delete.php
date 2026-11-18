@@ -1,4 +1,27 @@
-<?php session_start(); ?>
+<?php require "header.php"; ?>
+<?php
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+} else if($_SESSION['user']['authority'] != 1){
+    ?>
+    <p>権限がありません。自動的に3秒後に前のページに戻ります。</p>
+    <p>移動しない場合は<a href="menu.php">こちら</a>をクリックしてください。</p>
+    <script>
+        setTimeout(function() {
+            // 履歴があれば1つ戻る、直接アクセスなどで履歴がなければトップへ
+            if (window.history.length > 1) {
+                history.back();
+            } else {
+                location.href = '/index.php';
+            }
+        }, 3000); // 3000ミリ秒
+    </script>
+    <?php
+    exit();
+}
+?>
 <?php require "config/database.php"; ?>
 <?php
 // 1. URLのパラメータ（?id=〜）から削除するユーザーのIDを取得

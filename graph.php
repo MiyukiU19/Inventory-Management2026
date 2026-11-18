@@ -1,5 +1,12 @@
-<?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+}
+?>
+<?php require "config/database.php"; ?>
 <script src="js/chart.js" defer></script>
 <script src="js/choices.min.js" defer></script>
 <script src="js/graph.js" defer></script>

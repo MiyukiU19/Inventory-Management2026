@@ -1,5 +1,11 @@
 <?php
 require "header.php";
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+}
+
 require "config/database.php";
 
 $stockId = $_GET['id'];

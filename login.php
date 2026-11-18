@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+<?php require "header.php"; ?>
 <?php require "config/database.php"; ?>
 <?php
 $error_message = "";
@@ -51,9 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
 </header>
 
 <main class="login-page">
-
-    
-
     <form action="" class="login_form" method="post">
 
         <p>
