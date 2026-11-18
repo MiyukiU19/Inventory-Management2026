@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS inventory_history;
 DROP TABLE IF EXISTS inventory;
 DROP TABLE IF EXISTS mat_specification;
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS category;
 
 -- ==========================================
 -- 2. テーブルの作成
@@ -34,6 +35,12 @@ CREATE TABLE mat_specification (
     measurement_unit INT NOT NULL
 );
 
+-- カテゴリーテーブル
+CREATE TABLE category (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL
+);
+
 -- 在庫テーブル
 CREATE TABLE inventory (
     stock_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,7 +49,9 @@ CREATE TABLE inventory (
     border_line INT NOT NULL,
     weight DECIMAL(10,3) NOT NULL,
     container_weight DECIMAL(10,3) NOT NULL,
-    img VARCHAR(255) NOT NULL
+    img VARCHAR(255) NOT NULL,
+    category_id INT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 
 -- 所有マットテーブル
@@ -95,40 +104,44 @@ INSERT INTO user (user_id, user_name, password, authority) VALUES
 INSERT INTO mat_specification (mat_spec_id, load_capacity, measurement_unit) VALUES
 (1, 1000, 1), (2, 5000, 10), (3, 10000, 50), (4, 20000, 100);
 
--- 2. 在庫 (30件)
-INSERT INTO inventory (stock_id, stock_name, amount, border_line, weight, container_weight, img) VALUES
-(1, 'M2×10 なべ小ねじ', 10, 1000, 0.350, 0.150, 'screw_m2.png'),
-(2, 'M3×15 六角穴付きボルト', 15, 500, 1.200, 0.200, 'bolt_m3.png'),
-(3, 'M4 六角ナット', 5, 1000, 0.800, 0.100, 'nut_m4.png'),
-(4, 'SUS304 平ワッシャー M4用', 8, 2000, 0.250, 0.120, 'washer_m4.png'),
-(5, '深溝玉軸受 6200ZZ', 350, 50, 32.000, 1.500, 'bearing_6200.png'),
-(6, 'リニアガイド HSR15', 2500, 20, 450.000, 2.100, 'linear_guide.png'),
-(7, 'アルミフレーム 2020 (1000mm)', 800, 30, 480.000, 0.800, 'alum_2020.png'),
-(8, 'アルミフレーム 4040 (1000mm)', 1800, 15, 1600.000, 1.200, 'alum_4040.png'),
-(9, 'L字ブラケット 2020用', 120, 100, 15.500, 0.500, 'bracket_20.png'),
-(10, 'Tナット M5', 30, 500, 3.100, 0.300, 'tnut_m5.png'),
-(11, 'ステッピングモーター NEMA17', 1500, 25, 280.000, 0.600, 'motor_nema17.png'),
-(12, 'サーボモーター SG90', 400, 50, 9.000, 0.250, 'servo_sg90.png'),
-(13, 'タイミングベルト GT2 幅6mm', 200, 10, 12.000, 0.100, 'belt_gt2.png'),
-(14, 'タイミングプーリー 20歯', 350, 40, 6.500, 0.150, 'pulley_20t.png'),
-(15, 'カップリング 5×8mm', 600, 30, 18.000, 0.400, 'coupling.png'),
-(16, 'Oリング P-10', 40, 200, 0.150, 0.050, 'oring_p10.png'),
-(17, '結束バンド 100mm 白', 5, 50, 0.300, 0.100, 'cable_tie.png'),
-(18, '熱収縮チューブ Φ3.0', 80, 20, 2.500, 0.200, 'tube_3.png'),
-(19, 'プリント基板 ユニバーサル', 250, 40, 25.000, 0.350, 'pcb_uni.png'),
-(20, '抵抗器 1kΩ 1/4W', 1, 1000, 0.200, 0.080, 'resistor_1k.png'),
-(21, '電解コンデンサ 100μF', 20, 500, 1.500, 0.120, 'capacitor_100.png'),
-(22, 'LED 5mm 赤', 15, 300, 0.300, 0.050, 'led_red.png'),
-(23, 'トグルスイッチ 2極', 180, 50, 12.000, 0.300, 'switch_toggle.png'),
-(24, 'リミットスイッチ', 320, 80, 8.500, 0.250, 'switch_limit.png'),
-(25, 'VVFケーブル 1.6mm 2心', 1200, 5, 115.000, 1.800, 'cable_vvf.png'),
-(26, '圧着端子 R2-4', 12, 400, 0.700, 0.200, 'terminal_r2.png'),
-(27, '絶縁テープ 黒', 150, 30, 45.000, 0.150, 'tape_insulation.png'),
-(28, 'シリコングリス', 850, 15, 20.000, 0.400, 'grease.png'),
-(29, 'ねじロック剤', 600, 10, 50.000, 0.300, 'threadlocker.png'),
-(30, 'ウレタンゴムシート 3mm', 950, 25, 320.000, 2.500, 'rubber_sheet.png');
+-- 2. カテゴリー (4件)
+INSERT INTO category (category_id, category_name) VALUES
+(01, '鋼材'), (02, '小物'), (03, '中国'), (04, 'その他');
 
--- 3. 所有マット (30件)
+-- 3. 在庫 (30件)
+INSERT INTO inventory (stock_id, stock_name, amount, border_line, weight, container_weight, img, category_id) VALUES
+(1, 'M2×10 なべ小ねじ', 10, 1000, 0.350, 0.150, 'screw_m2.png', 02),
+(2, 'M3×15 六角穴付きボルト', 15, 500, 1.200, 0.200, 'bolt_m3.png', 02),
+(3, 'M4 六角ナット', 5, 1000, 0.800, 0.100, 'nut_m4.png', 02),
+(4, 'SUS304 平ワッシャー M4用', 8, 2000, 0.250, 0.120, 'washer_m4.png', 02),
+(5, '深溝玉軸受 6200ZZ', 350, 50, 32.000, 1.500, 'bearing_6200.png', 02),
+(6, 'リニアガイド HSR15', 2500, 20, 450.000, 2.100, 'linear_guide.png', 02),
+(7, 'アルミフレーム 2020 (1000mm)', 800, 30, 480.000, 0.800, 'alum_2020.png', 02),
+(8, 'アルミフレーム 4040 (1000mm)', 1800, 15, 1600.000, 1.200, 'alum_4040.png', 02),
+(9, 'L字ブラケット 2020用', 120, 100, 15.500, 0.500, 'bracket_20.png', 02),
+(10, 'Tナット M5', 30, 500, 3.100, 0.300, 'tnut_m5.png', 02),
+(11, 'ステッピングモーター NEMA17', 1500, 25, 280.000, 0.600, 'motor_nema17.png', 01),
+(12, 'サーボモーター SG90', 400, 50, 9.000, 0.250, 'servo_sg90.png', 01),
+(13, 'タイミングベルト GT2 幅6mm', 200, 10, 12.000, 0.100, 'belt_gt2.png', 01),
+(14, 'タイミングプーリー 20歯', 350, 40, 6.500, 0.150, 'pulley_20t.png', 01),
+(15, 'カップリング 5×8mm', 600, 30, 18.000, 0.400, 'coupling.png', 02),
+(16, 'Oリング P-10', 40, 200, 0.150, 0.050, 'oring_p10.png', 02),
+(17, '結束バンド 100mm 白', 5, 50, 0.300, 0.100, 'cable_tie.png', 02),
+(18, '熱収縮チューブ Φ3.0', 80, 20, 2.500, 0.200, 'tube_3.png', 04),
+(19, 'プリント基板 ユニバーサル', 250, 40, 25.000, 0.350, 'pcb_uni.png', 04),
+(20, '抵抗器 1kΩ 1/4W', 1, 1000, 0.200, 0.080, 'resistor_1k.png', 04),
+(21, '電解コンデンサ 100μF', 20, 500, 1.500, 0.120, 'capacitor_100.png', 04),
+(22, 'LED 5mm 赤', 15, 300, 0.300, 0.050, 'led_red.png', 02),
+(23, 'トグルスイッチ 2極', 180, 50, 12.000, 0.300, 'switch_toggle.png', 03),
+(24, 'リミットスイッチ', 320, 80, 8.500, 0.250, 'switch_limit.png', 03),
+(25, 'VVFケーブル 1.6mm 2心', 1200, 5, 115.000, 1.800, 'cable_vvf.png', 04),
+(26, '圧着端子 R2-4', 12, 400, 0.700, 0.200, 'terminal_r2.png', 04),
+(27, '絶縁テープ 黒', 150, 30, 45.000, 0.150, 'tape_insulation.png', 04),
+(28, 'シリコングリス', 850, 15, 20.000, 0.400, 'grease.png', 04),
+(29, 'ねじロック剤', 600, 10, 50.000, 0.300, 'threadlocker.png', 04),
+(30, 'ウレタンゴムシート 3mm', 950, 25, 320.000, 2.500, 'rubber_sheet.png', 04);
+
+-- 4. 所有マット (30件)
 INSERT INTO possess_mat (mat_id, serial_id, stock_id, mat_spec_id) VALUES
 (1, 'W93847102934', 1, 1), (2, 'W18475920384', 2, 2), (3, 'W82736450192', 3, 1),
 (4, 'W39485710293', 4, 3), (5, 'W58291037465', 5, 1), (6, 'W10394857621', NULL, 1), 
@@ -141,7 +154,7 @@ INSERT INTO possess_mat (mat_id, serial_id, stock_id, mat_spec_id) VALUES
 (25, 'W84756192038', 25, 1), (26, 'W10293847569', NULL, 1), (27, 'W39485710294', 27, 1), 
 (28, 'W58473629103', 28, 1), (29, 'W93847102935', 29, 1), (30, 'W18475920385', NULL, 1);
 
--- 4. 在庫履歴 (116640件: 27種類 × 各年2160時間(3ヶ月) × 2年分)
+-- 5. 在庫履歴 (116640件: 27種類 × 各年2160時間(3ヶ月) × 2年分)
 INSERT INTO inventory_history (stock_id, stock_name, amount, update_date, quantity, weight, max_weight)
 SELECT
     base.stock_id,
