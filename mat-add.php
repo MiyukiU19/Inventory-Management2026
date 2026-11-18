@@ -1,4 +1,11 @@
 <?php require "header.php"; ?>
+<?php
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+}
+?>
 <?php require "config/database.php"; ?>
 
     <header class="hd_h1 mat-add-header">

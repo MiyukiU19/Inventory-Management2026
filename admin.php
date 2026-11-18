@@ -1,4 +1,12 @@
 <?php require "header.php"; ?>
+<?php
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+}
+?>
+
 <?php require "config/database.php"; ?>
 
 <main class="page-container user-list-page">
