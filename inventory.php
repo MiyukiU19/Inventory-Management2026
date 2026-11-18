@@ -160,11 +160,16 @@ $totalAmount = $stockData['quantity'] * $stockData['amount'];
 // 総重量の末尾の0を調整
 $maxWeight = formatDecimalFlexible($stockData['max_weight']);
 
+// 3桁ごとにカンマを付ける
+$formatQuantity = number_format($stockData['quantity']);
+$formatMaxWeight = number_format($maxWeight);
+$formatTotalAmount = number_format($totalAmount);
+
 // 2行目：在庫・総重量・合計金額
 echo "<div class='inventory-details'>";
-echo "<span class='inventory-detail'>在庫：{$stockData['quantity']}個</span>";
-echo "<span class='inventory-detail'>総重量：{$maxWeight}kg</span>";
-echo "<span class='inventory-detail'>合計：{$totalAmount}円</span>";
+echo "<span class='inventory-detail'>在庫：{$formatQuantity}個</span>";
+echo "<span class='inventory-detail'>総重量：{$formatMaxWeight}kg</span>";
+echo "<span class='inventory-detail'>合計：{$formatTotalAmount}円</span>";
 echo "</div>";
 
 echo "</div>";
