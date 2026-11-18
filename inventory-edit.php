@@ -99,9 +99,9 @@ function formatDecimalFlexible($num) {
                 <div style="display: none;"><input type="text" id="container-input">kg</div>
             </div>
             <div>
-                <p>マットのシリアル番号</p>
+                <p>マット番号</p>
                 <div>
-                    <p id="serial-id"><?php echo $mat["serial_id"]?></p>
+                    <p id="serial-id">(<?php echo $mat["identification_id"]?>) <?php echo $mat["serial_id"]?></p>
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->

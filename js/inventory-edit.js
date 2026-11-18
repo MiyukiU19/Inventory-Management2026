@@ -203,14 +203,14 @@ inventoryEditBtn.addEventListener("click", async () => {
     const connectData = await response.json();
     let option = document.createElement("option");
     option.value = connectData.mat.mat_id;
-    option.innerText = connectData.mat.serial_id;
+    option.innerText = `(${connectData.mat.identification_id}) ${connectData.mat.serial_id}`;
     option.selected = true;
     serialSelect.appendChild(option);
 
     notConnectData.mat.forEach((e) => {
         let option = document.createElement("option");
         option.value = e.mat_id;
-        option.innerText = e.serial_id;
+        option.innerText = `(${e.identification_id}) ${e.serial_id}`;
 
         serialSelect.appendChild(option);
     });
