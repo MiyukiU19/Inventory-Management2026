@@ -4,18 +4,39 @@
 
 <?php
 // 検索キーワードが送信されたか判定
-$is_search = isset($_GET['search']);
-$search = $_GET['search'] ?? '';
+$search = trim($_GET['search'] ?? ''); //trim()は文字列の不要な空白や改行を取り除く
+$is_search = ($search !== ''); //searchが空白でない時 判定
+$category_id = isset($_GET['category_id']) && $_GET['category_id'] !== '' ? intval($_GET['category_id']) : '';
+$is_category_selected = ($category_id !== '');
+
+// カテゴリ一覧の取得
+try {
+    $cat_stmt = $pdo->query("SELECT * FROM category");
+    $categories = $cat_stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) {
+    $categories = [];
+    $error_message = "カテゴリ取得エラー: " . $e->getMessage();
+}
 
 try {
+    // 検索機能と絞り込み機能
+    $sql_parts = ['select * from inventory where 1=1'];
+    $params = [];
+
+    // 検索ボタンが押された場合
     if ($is_search) {
-        // 検索ボタンが押された場合
-        $sql = $pdo->prepare("SELECT * FROM inventory WHERE stock_name LIKE ?");
-        $sql->execute(['%' . $search . '%']);
-    } else {
-        // 最初にページを開いた場合は全件表示
-        $sql = $pdo->query("SELECT * FROM inventory");
+        $sql_parts[] = "stock_name LIKE ?";
+        $params[] = '%' . $search . '%';
     }
+    // 絞り込み カテゴリーを選択したら
+    if ($is_category_selected) {
+        $sql_parts[] = "category_id = ?";
+        $params[] = $category_id;
+    }
+
+    $sql = $pdo->prepare(implode('AND', $sql_parts));
+    $sql->execute($params);
+
 } catch (Throwable $e) {
     $error_message = "データ取得エラー: " . $e->getMessage();
 }
@@ -45,26 +66,58 @@ function formatDecimalFlexible($num) {
     <h1>在庫一覧</h1>
 </header>
 
-<!-- 検索フォーム -->
+<!-- 検索フォーム & 絞り込み機能-->
 <div class="inventory-controls">
     <div style="display: flex; align-items: center; gap: 10px;">
-        <form action="inventory.php" method="get">
-            <input type="text" name="search"
-                style="border: 1px solid black; border-radius:8px"
-                placeholder="🔍在庫を検索">
+        <!-- キーワード検索 -->
+        <form action="inventory.php" method="get" onsubmit="return checkSearch(this)">
+            <input type="text" name="search" id="searchInput"
+                value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>"
+                style="border: 1px solid black; border-radius:8px" placeholder="🔍在庫を検索">
+            <!-- カテゴリ選択中の場合は保持する -->
+            <?php
+            if($is_category_selected) {
+                echo "<input type='hidden' name='category_id' value='" . htmlspecialchars($category_id, ENT_QUOTES, 'UTF-8') . "'>";
+            }
+            ?>
             <input type="submit" style="background-color:blue; color:white" value="検索">
         </form>
 
-        <!-- 検索後だけ表示 -->
+        <!-- クリアボタン 検索後だけ表示（キーワード検索のみを解除） -->
         <?php if ($is_search): ?>
             <button type="button" class="mat-edit-button"
-                onclick="location.href='inventory.php'">クリア</button>
+                onclick="location.href='inventory.php<?php echo $is_category_selected ? '?category_id=' . $category_id : ''; ?>'">クリア</button>
         <?php endif; ?>
     </div>
 
+    <!-- 絞り込みプルダウン -->
+    <div>
+        <form action="inventory.php" method="get">
+            <!-- キーワード検索中の場合は保持する -->
+            <?php
+                if($is_search) {
+                echo "<input type='hidden' name='search' value='" . htmlspecialchars($search, ENT_QUOTES, 'UTF-8') . "'>";
+                }
+            ?>
+            <select name="category_id" onchange="this.form.submit()" style="border: 1px solid black; border-radius:8px; padding: 4px 8px;">
+                <option value="">すべてのカテゴリ</option>
+                <?php 
+                foreach ($categories as $cat){
+                    $selected = ($category_id === (int)$cat['category_id']) ? 'selected' : '';
+                    $cat_id = htmlspecialchars($cat['category_id'], ENT_QUOTES, 'UTF-8');
+                    $cat_name = htmlspecialchars($cat['category_name'], ENT_QUOTES, 'UTF-8');
+                    echo "<option value='{$cat_id}' {$selected}>{$cat_name}</option>";
+                }
+                ?>
+            </select>
+        </form>
+    </div>
+
     <!-- 在庫登録ボタン -->
+    <div>
     <button type="button" class="mat-edit-button"
         onclick="location.href='inventory-add.php'">登録</button>
+    </div>
 </div>
 
 
