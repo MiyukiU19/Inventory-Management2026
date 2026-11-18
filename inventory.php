@@ -58,6 +58,21 @@ function formatDecimalFlexible($num) {
 
     return $trimmed;
 }
+
+function formatNumberKeepDecimals($num) {
+    // 文字列に変換して小数点で分割
+    $parts = explode('.', (string)$num);
+
+    // 整数部分のみ3桁区切りにする
+    $integerPart = number_format((float)$parts[0]);
+
+    // 小数部分があれば結合して返す
+    if (isset($parts[1])) {
+        return $integerPart . '.' . $parts[1];
+    }
+
+    return $integerPart;
+}
 ?>
 
 <header class="hd_h1 inventory-header">
@@ -161,9 +176,9 @@ $totalAmount = $stockData['quantity'] * $stockData['amount'];
 $maxWeight = formatDecimalFlexible($stockData['max_weight']);
 
 // 3桁ごとにカンマを付ける
-$formatQuantity = number_format($stockData['quantity']);
-$formatMaxWeight = number_format($maxWeight);
-$formatTotalAmount = number_format($totalAmount);
+$formatQuantity = formatNumberKeepDecimals($stockData['quantity']);
+$formatMaxWeight = formatNumberKeepDecimals($maxWeight);
+$formatTotalAmount = formatNumberKeepDecimals($totalAmount);
 
 // 2行目：在庫・総重量・合計金額
 echo "<div class='inventory-details'>";
