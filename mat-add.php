@@ -9,8 +9,12 @@
 
 <form action="mat.php" method="post" class="mat-add-form">
     <div>
+        <p>識別番号</p>
+        <input type="text" name="identification_id" placeholder="1">
+    </div>
+    <div>
         <p>シリアル番号</p>
-        <input type="text" name="serial"  required>
+        <input type="text" name="serial" placeholder="W12345678901" required>
     </div>
     <div>
         <p>サイズ</p>
@@ -34,7 +38,6 @@
     echo "</select>";
     ?>
     <div>
-        
         <input type="submit" value="追加する" style="color: white;">
     </div>
 </form>

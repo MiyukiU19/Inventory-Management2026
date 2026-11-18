@@ -203,6 +203,22 @@ function getConnectedMatById($pdo, $request){
     ];
 }
 
+// $requestに入っているborderLineを取得する
+function getBorderLine($pdo, $request){
+    $stockId = $request['stock_id'];
+    $sql = $pdo -> prepare("
+        select * from inventory
+        where stock_id = ?
+    ");
+    $sql -> execute([$stockId]);
+    $borderLine = $sql -> fetch(PDO::FETCH_ASSOC)['border_line'];
+
+    return [
+        "status" => "success",
+        "border_line" => $borderLine
+    ];
+}
+
 // action の中身によって、処理を振り分ける（switch文）
 switch ($action) {
     case 'get_graph_data':
@@ -223,6 +239,10 @@ switch ($action) {
 
     case "get_connected_mat_by_id":
         $response = getConnectedMatById($pdo, $request);
+        break;
+
+    case "get_border_line":
+        $response = getBorderLine($pdo, $request);
         break;
 
     default:

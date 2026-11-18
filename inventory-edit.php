@@ -44,6 +44,7 @@ function formatDecimalFlexible($num) {
 ?>
 <script src="js/chart.js" defer></script>
 <script src="js/inventory-edit.js" defer></script>
+<script src="js/chartjs-plugin-annotation.min.js" defer></script>
 <header class="hd_h1 inventory-header">
     <button type="button" class="mat-edit-button back-button"
         onclick="location.href='inventory.php'">❮</button>

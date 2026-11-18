@@ -7,13 +7,20 @@
     <h1>マット編集</h1>
 </div>
     <div class="mat-edit-group">
-        <p class="mat-edit-label">シリアル番号</p>
+        <p class="mat-edit-label">識別番号</p>
         <?php
         $matId = $_GET['id'];
         $sql = $pdo -> prepare("select * from possess_mat where mat_id = ?");
         $sql -> execute([$matId]);
-        $mat = $sql->fetch(PDO::FETCH_NUM);
-        echo "<input class='mat-edit-input' type='text' name='serial' value='", $mat[1], "' required>"
+        $mat = $sql->fetch(PDO::FETCH_ASSOC);
+        echo "<input class='mat-edit-input' type='text' name='identification_id' value='", $mat['identification_id'], "' placeholder='1'>";
+        ?>
+    </div>
+
+    <div class="mat-edit-group">
+        <p class="mat-edit-label">シリアル番号</p>
+        <?php
+        echo "<input class='mat-edit-input' type='text' name='serial' value='", $mat["serial_id"], "' placeholder='W12345678901' required>"
         ?>
     </div>
 
@@ -30,7 +37,7 @@
             ];
 
             foreach($matSpecs as $key => $value){
-                if($mat[3] == $key){
+                if($mat['mat_spec_id'] == $key){
                     echo "<option value='$key' selected>$value</option>";
                 } else {
                     echo "<option value='$key'>$value</option>";
@@ -48,7 +55,7 @@
     echo "<select class='mat-edit-select' name='inventory'>";
     echo "<option></option>";
     foreach($sql as $row){
-        if($mat['2'] == $row['stock_id']){
+        if($mat["stock_id"] == $row['stock_id']){
             echo "<option value='", $row['stock_id'],"' selected>", $row['stock_name'],"</option>";
         } else {
             echo "<option value='", $row['stock_id'],"'>", $row['stock_name'],"</option>";
