@@ -30,3 +30,24 @@ matEditForm.addEventListener("submit", e => {
     // formを送信する。
     matEditForm.submit();
 });
+
+// 三桁ごとにカンマを付ける
+function formatNumberKeepDecimals(num) {
+    // 文字列に変換して小数点で分割
+    const parts = String(num).split('.');
+
+    // 整数部分に正規表現で3桁ごとのカンマを挿入
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // 小数部分があれば結合して返す
+    return parts.join('.');
+}
+
+// 三桁ごとのカンマを取り除く(第二引数がtrueなら数値型で返す)
+function removeCommas(str, asNumber = false) {
+    // すべてのカンマを空文字に置換
+    const cleanStr = String(str).replaceAll(',', '');
+
+    // 第2引数がtrueなら数値型に変換して返す
+    return asNumber ? Number(cleanStr) : cleanStr;
+}

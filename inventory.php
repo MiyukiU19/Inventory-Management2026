@@ -116,7 +116,7 @@ function formatNumberKeepDecimals($num) {
             ?>
             <select name="category_id" onchange="this.form.submit()" style="border: 1px solid black; border-radius:8px; padding: 4px 8px;">
                 <option value="">すべてのカテゴリ</option>
-                <?php 
+                <?php
                 foreach ($categories as $cat){
                     $selected = ($category_id === (int)$cat['category_id']) ? 'selected' : '';
                     $cat_id = htmlspecialchars($cat['category_id'], ENT_QUOTES, 'UTF-8');

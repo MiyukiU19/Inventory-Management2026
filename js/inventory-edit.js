@@ -79,10 +79,10 @@ async function createLineChart(canvas, year, month, stockId){
                         }
                     }
                 },
-                // 【ここを追加】基準線（アノテーション）の設定
+                // 基準線（アノテーション）の設定
                 annotation: {
                     annotations: {
-                        // 任意の名前（line1 などでOK）
+                        // 任意の名前
                         line1: {
                             type: 'line',
                             yMin: borderData.border_line, // 縦軸（Y軸）のどの位置に線を引くか（※ここを商品の基準値の数値にする）
@@ -165,9 +165,9 @@ inventoryEditBtn.addEventListener("click", async () => {
     });
 
     // 元のデータを編集用テキストボックスに入れる
-    borderLineInput.value = borderLine.innerText;
-    containerInput.value = containerWeight.innerText;
-    amountInput.value = amount.innerText;
+    borderLineInput.value = removeCommas(borderLine.innerText);
+    containerInput.value = removeCommas(containerWeight.innerText);
+    amountInput.value = removeCommas(amount.innerText);
 
     // 編集用のテキストボックスなどを表示する
     editBtns.style.display = "block";
@@ -263,11 +263,11 @@ confirmBtn.addEventListener("click", async () => {
             e.parentElement.style.display = "none";
         });
 
-        borderLine.innerText = borderLineInput.value;
+        borderLine.innerText = formatNumberKeepDecimals(borderLineInput.value);
         serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
-        containerWeight.innerText = containerInput.value;
+        containerWeight.innerText = formatNumberKeepDecimals(containerInput.value);
         prevMatId.innerText = newMatId;
-        amount.innerText = newAmount;
+        amount.innerText = formatNumberKeepDecimals(newAmount);
 
         inventoryEditBtn.style.display = "block";
         displayItems.forEach(e => {
