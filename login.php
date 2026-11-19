@@ -6,14 +6,14 @@ $_SESSION['user'] = null; // このページにアクセスしたら自動的に
 $error_message = "";
 // ログインボタンが押された場合の処理
 if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
-    $user_name = $_POST['user-name'] ?? ''; //送られてきたデータを代入
+    $uniform_number = $_POST['uniform-number'] ?? ''; //送られてきたデータを代入
     $password = $_POST['password'] ?? ''; //?? '' もし送られてきた値がnullなら空の文字列を代入
 
-    if (!empty($user_name) && !empty($password)) { //どっちも入力されている場合
+    if (!empty($uniform_number) && !empty($password)) { //どっちも入力されている場合
         try {
             // ユーザー名でデータベースを検索
-            $sql = $pdo->prepare('SELECT * FROM user WHERE user_name = ?');
-            $sql->execute([$user_name]);
+            $sql = $pdo->prepare('SELECT * FROM user WHERE uniform_number = ?');
+            $sql->execute([$uniform_number]);
             $row = $sql->fetch(); // データベースを検索し、該当するユーザーを配列として取得し、変数に代入
 
             // ユーザーが存在し、かつパスワードが一致するかどうか
@@ -22,7 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
                 $_SESSION['user'] = [
                     'id' => $row['id'],
                     'user_name' => $row['user_name'],
-                    'authority' => $row['authority']
+                    'authority' => $row['authority'],
+                    'uniform_number' => $row['uniform_number']
                 ];
 
                 // --- 権限によって遷移先を切り替える処理 ---
@@ -34,13 +35,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
                 }
                 exit();
             } else {
-                $error_message = 'ユーザー名またはパスワードが間違っています。'; // ユーザーが見つからなかった、パスワードが違う場合の処理
+                $error_message = '背番号またはパスワードが間違っています。'; // ユーザーが見つからなかった、パスワードが違う場合の処理
             }
         } catch (Throwable $e) {
             $error_message = 'データベースエラーが発生しました: ' . $e->getMessage(); // tryの中でデータベース接続やSQLの実行エラーが起きた場合
         }
     } else {
-        $error_message = 'ユーザー名とパスワードを入力してください。'; // ユーザー名またはパスワードどちらかが空欄の場合
+        $error_message = '背番号とパスワードを入力してください。'; // 背番号またはパスワードどちらかが空欄の場合
     }
 }
 ?>
@@ -55,8 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
     <form action="" class="login_form" method="post">
 
         <p>
-            ユーザー名<br>
-            <input type="text" name="user-name">
+            背番号<br>
+            <input type="text" name="uniform-number">
         </p>
 
         <p>
