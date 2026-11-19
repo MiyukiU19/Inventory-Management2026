@@ -98,6 +98,35 @@ function formatDecimalFlexible($num) {
         <!-- このdivの子要素にインデントを付けるとバグる可能性があります -->
         <div class="inventory-detail-info">
             <div>
+                <p>1個あたりの金額</p>
+                <div>
+                    <div id="amount"><?php echo htmlspecialchars($stockData["amount"], ENT_QUOTES, 'UTF-8'); ?></div>円
+                </div>
+                <div style="display: none;"><input id="amount-input">円</div>
+            </div>
+            <div>
+                <p>1個あたりの重さ</p>
+                <div>
+                    <div id="weight"><?php echo formatDecimalFlexible($stockData["weight"]); ?></div>kg
+                </div>
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div style="display: none;"><input type="text" id="weight-input">kg</div>
+            </div>
+            <div>
+                <p>マット番号</p>
+                <div>
+                    <p id="serial-id">(<?php echo $mat["identification_id"]?>) <?php echo $mat["serial_id"]?></p>
+                </div>
+
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div style="display: none;"><select id="serial-select"></select></div>
+
+                <!-- マットID -->
+                <div style="display: none;">
+                    <input id="hidden-mat-id" type="hidden" value="<?php echo $mat["mat_id"] ?>">
+                </div>
+            </div>
+            <div>
                 <p>発注基準値</p>
                 <div>
                     <div id="border-line"><?php echo htmlspecialchars($stockData["border_line"], ENT_QUOTES, 'UTF-8'); ?></div>個
@@ -116,35 +145,6 @@ function formatDecimalFlexible($num) {
 
                 <!-- 編集ボタンが押されるまで非表示 -->
                 <div style="display: none;"><input type="text" id="container-input">kg</div>
-            </div>
-            <div>
-                <p>マット番号</p>
-                <div>
-                    <p id="serial-id">(<?php echo $mat["identification_id"]?>) <?php echo $mat["serial_id"]?></p>
-                </div>
-
-                <!-- 編集ボタンが押されるまで非表示 -->
-                <div style="display: none;"><select id="serial-select"></select></div>
-
-                <!-- マットID -->
-                <div style="display: none;">
-                    <input id="hidden-mat-id" type="hidden" value="<?php echo $mat["mat_id"] ?>">
-                </div>
-            </div>
-            <div>
-                <p>一つ当たりの金額</p>
-                <div>
-                    <div id="amount"><?php echo htmlspecialchars($stockData["amount"], ENT_QUOTES, 'UTF-8'); ?></div>円
-                </div>
-                <div style="display: none;"><input id="amount-input">円</div>
-            </div>
-            <div>
-                <p>1個あたりの重さ</p>
-                <div>
-                    <div id="weight"><?php echo formatDecimalFlexible($stockData["weight"]); ?></div>kg
-                </div>
-                <!-- 編集ボタンが押されるまで非表示 -->
-                <div style="display: none;"><input type="text" id="weight-input">kg</div>
             </div>
             <div>
                 <p>カテゴリー</p>
