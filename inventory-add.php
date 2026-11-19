@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $container_weight = $_POST['container_weight'] ?? ''; // 容器の重さ
     $amount           = $_POST['amount'] ?? ''; // 1個あたりの金額
     $border_line      = $_POST['border_line'] ?? ''; // 発注基準値
+    $category_id      = $_POST['category_id'] ?? ''; // カテゴリーID
     $mat_id           = $_POST['serial_id'] ?? null; // マットID　※設定しなくてもOK
     $img              = ''; // 商品画像
 
@@ -43,14 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // 必須事項の入力があるかチェック
-    if (!empty($stock_name) && !empty($weight) && !empty($amount) && !empty($border_line)) {
+    if (!empty($stock_name) && !empty($weight) && !empty($amount) && !empty($border_line) && !empty($category_id)) {
         try {
             // トランザクション開始
             $pdo->beginTransaction();
 
             // データベースに新しい在庫情報を追加
-            $sql = $pdo->prepare("insert into inventory (stock_name, weight, container_weight, amount, border_line, img) values (?, ?, ?, ?, ?, ?)");
-            $sql->execute([$stock_name, $weight, $container_weight, $amount, $border_line, $img]);
+            $sql = $pdo->prepare("insert into inventory (stock_name, weight, container_weight, amount, border_line, category_id, img) values (?, ?, ?, ?, ?, ?, ?)");
+            $sql->execute([$stock_name, $weight, $container_weight, $amount, $border_line, $category_id, $img]);
 
             // 2. 今登録したばかりの在庫の自動採番された stock_id を取得する
             $new_stock_id = $pdo->lastInsertId();
@@ -131,9 +132,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <?php
             $sql = $pdo->query("select * from possess_mat where stock_id is null");
             echo "<select name='serial_id'>";
-            echo "<option></option>";
+            echo "<option value=''>選択してください</option>";
             foreach($sql as $row){
                 echo "<option value='{$row['mat_id']}'>{$row['serial_id']}</option>";
+            }
+            echo "</select>";
+        ?>
+    </div>
+    <div>
+        <p>カテゴリー</p>
+        <?php
+            $cat_sql = $pdo->query("SELECT * FROM category");
+            echo "<select name='category_id' required>";
+            echo "<option value=''>選択してください</option>";
+            foreach($cat_sql as $cat){
+                echo "<option value='{$cat['category_id']}'>{$cat['category_name']}</option>";
             }
             echo "</select>";
         ?>

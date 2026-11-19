@@ -8,12 +8,26 @@ if(empty($_SESSION['user'])){
 
 require "config/database.php";
 
-$stockId = $_GET['id'];
+$stockId = $_GET['id'] ?? 0;
+
+// カテゴリー一覧を取得する
+$categories = $pdo->query("SELECT category_id, category_name FROM category ORDER BY category_id")
+                ->fetchAll(PDO::FETCH_ASSOC);
 
 // inventoryからデータを取り出す
-$stockSql = $pdo -> prepare("select * from inventory where stock_id = ?");
+$stockSql = $pdo -> prepare("
+    select inventory.* , category.category_name 
+    from inventory left join category on inventory.category_id = category.category_id
+    where inventory.stock_id = ?
+    ");
 $stockSql -> execute([$stockId]);
 $stockData = $stockSql -> fetch(PDO::FETCH_ASSOC);
+
+// 該当する在庫がない場合は、エラーにならないようにメッセージを出して終了する
+if (!$stockData) {
+    echo "<p>該当する在庫が見つかりません。</p>";
+    exit();
+}
 
 // inventory_historyからデータを取り出す
 $lastStockSql = $pdo -> prepare("
@@ -24,6 +38,11 @@ $lastStockSql = $pdo -> prepare("
 ");
 $lastStockSql -> execute([$stockId]);
 $lastStockData = $lastStockSql -> fetch(PDO::FETCH_ASSOC);
+
+// 履歴が1件もない在庫でもエラーにならないようにする
+if (!$lastStockData) {
+    $lastStockData = ['quantity' => 0, 'max_weight' => 0];
+}
 
 // possess_matからデータを取り出す
 $matSql = $pdo -> prepare("select * from possess_mat where stock_id = ?");
@@ -64,8 +83,8 @@ function formatNumberKeepDecimals($num) {
 }
 ?>
 <script src="js/chart.js" defer></script>
-<script src="js/inventory-edit.js" defer></script>
 <script src="js/chartjs-plugin-annotation.min.js" defer></script>
+<script src="js/inventory-edit.js" defer></script>
 <header class="hd_h1 inventory-header">
     <button type="button" class="mat-edit-button back-button"
         onclick="location.href='inventory.php'">❮</button>
@@ -77,7 +96,7 @@ function formatNumberKeepDecimals($num) {
         <div class="inventory-detail-product">
             <!-- 画像 -->
             <?php
-            echo '<img src="images/', $stockData['img'], '">'
+            echo '<img src="images/', htmlspecialchars($stockData['img'], ENT_QUOTES, 'UTF-8'), '">'
             ?>
 
             <div class="inventory-detail-stock">
@@ -100,9 +119,38 @@ function formatNumberKeepDecimals($num) {
         <!-- このdivの子要素にインデントを付けるとバグる可能性があります -->
         <div class="inventory-detail-info">
             <div>
+                <p>1個あたりの金額</p>
+                <div>
+                    <div id="amount"><?php echo formatNumberKeepDecimals(htmlspecialchars($stockData["amount"], ENT_QUOTES, 'UTF-8')); ?></div>円
+                </div>
+                <div style="display: none;"><input id="amount-input">円</div>
+            </div>
+            <div>
+                <p>1個あたりの重さ</p>
+                <div>
+                    <div id="weight"><?php echo formatDecimalFlexible($stockData["weight"]); ?></div>kg
+                </div>
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div style="display: none;"><input type="text" id="weight-input">kg</div>
+            </div>
+            <div>
+                <p>マット番号</p>
+                <div>
+                    <p id="serial-id">(<?php echo $mat["identification_id"]?>) <?php echo $mat["serial_id"]?></p>
+                </div>
+
+                <!-- 編集ボタンが押されるまで非表示 -->
+                <div style="display: none;"><select id="serial-select"></select></div>
+
+                <!-- マットID -->
+                <div style="display: none;">
+                    <input id="hidden-mat-id" type="hidden" value="<?php echo $mat["mat_id"] ?>">
+                </div>
+            </div>
+            <div>
                 <p>発注基準値</p>
                 <div>
-                    <div id="border-line"><?php echo formatNumberKeepDecimals($stockData["border_line"])?></div>個
+                    <div id="border-line"><?php echo formatNumberKeepDecimals(htmlspecialchars($stockData["border_line"], ENT_QUOTES, 'UTF-8')); ?></div>個
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
@@ -120,25 +168,23 @@ function formatNumberKeepDecimals($num) {
                 <div style="display: none;"><input type="text" id="container-input">kg</div>
             </div>
             <div>
-                <p>マット番号</p>
+                <p>カテゴリー</p>
                 <div>
-                    <p id="serial-id">(<?php echo $mat["identification_id"]?>) <?php echo $mat["serial_id"]?></p>
+                    <!-- <div id="category-name"><?php //echo htmlspecialchars($stockData["category_name"] ?? '', ENT_QUOTES, 'UTF-8'); ?></div> -->
+                    <!-- data-category-id: キャンセル時や再編集時に、元のカテゴリーの選択に戻すために使う -->
+                    <div id="category-name" data-category-id="<?php echo (int)$stockData['category_id']; ?>"><?php echo htmlspecialchars($stockData["category_name"] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
                 </div>
-
                 <!-- 編集ボタンが押されるまで非表示 -->
-                <div style="display: none;"><select id="serial-select"></select></div>
-
-                <!-- マットID -->
                 <div style="display: none;">
-                    <input id="hidden-mat-id" type="hidden" value="<?php echo $mat["mat_id"] ?>">
+                    <select id="category-select">
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?php echo (int)$cat['category_id']; ?>"
+                                <?php if ($cat['category_id'] == $stockData['category_id']) echo 'selected'; ?>>
+                                <?php echo htmlspecialchars($cat['category_name'], ENT_QUOTES, 'UTF-8'); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-            </div>
-            <div>
-                <p>一つ当たりの金額</p>
-                <div>
-                    <div id="amount"><?php echo formatNumberKeepDecimals($stockData["amount"]) ?></div>円
-                </div>
-                <div style="display: none;"><input id="amount-input">円</div>
             </div>
         </div>
     </div>

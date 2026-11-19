@@ -1,3 +1,13 @@
+// 【追加点】api.php にJSONをPOSTして結果を返す共通関数(同じfetchの繰り返しをまとめた)
+async function postApi(data) {
+    const response = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    return await response.json();
+}
+
 let myChart = null;
 async function createLineChart(canvas, year, month, stockId){
     const requestGraphData = {
@@ -143,28 +153,72 @@ nextMonthBtn.addEventListener("click", () => {
 })
 
 
-// 編集
+// ===== 編集用要素の定義 =====
+// 【修正点】編集用の要素(Input類)の定義を、使う前の位置にまとめた
+// 表示用(普段見えている方)
 const borderLine = document.querySelector("#border-line");
 const containerWeight = document.querySelector("#container-weight");
 const serialId = document.querySelector("#serial-id");
 const amount = document.querySelector("#amount");
 const inventoryEditBtn = document.querySelector("#inventory-edit-btn");
+const weight = document.querySelector("#weight");
+const categoryName = document.querySelector("#category-name");
+
 const displayItems = [
     borderLine,
     containerWeight,
     serialId,
-    amount
+    amount,
+    categoryName,
+    weight
 ];
 
-// 在庫編集ボタンが押されたとき
+// 編集用(編集ボタンを押すと見える方)
+const borderLineInput = document.querySelector("#border-line-input");
+const containerInput = document.querySelector("#container-input");
+const serialSelect = document.querySelector("#serial-select");
+const amountInput = document.querySelector("#amount-input");
+const categorySelect = document.querySelector("#category-select");
+const weightInput = document.querySelector("#weight-input");
+
+const editItems = [
+    borderLineInput,
+    containerInput,
+    serialSelect,
+    amountInput,
+    categorySelect,
+    weightInput
+];
+
+const editBtns = document.querySelector("#edit-btns");
+const confirmBtn = document.querySelector("#inventory-confirm-btn");
+const cancelBtn = document.querySelector("#inventory-cancel-btn");
+// 【追加点】保存後に更新するため、マットIDの要素を定義
+const hiddenMatId = document.querySelector("#hidden-mat-id");
+
+// 【追加点】表示モードにする(編集用を隠して、表示用を出す)。保存とキャンセルで共通して使う
+function showDisplayMode() {
+    editBtns.style.display = "none";
+    editItems.forEach(e => {
+        e.parentElement.style.display = "none";
+    });
+
+    displayItems.forEach(e => {
+        e.parentElement.style.display = "block";
+    });
+    inventoryEditBtn.style.display = "block";
+}
+
+// ===== 在庫編集ボタンが押されたとき =====
 inventoryEditBtn.addEventListener("click", async () => {
-    // ボタンと編集中の要素を非表示にする
+    // ボタンと表示用の要素を非表示にする
     inventoryEditBtn.style.display = "none";
     displayItems.forEach(e => {
         e.parentElement.style.display = "none";
     });
 
-    // 元のデータを編集用テキストボックスに入れる
+    // 元のデータを編集用テキストボックスに入れる。カテゴリーは、保存済みのカテゴリーを選択状態に戻す
+    categorySelect.value = categoryName.dataset.categoryId;
     borderLineInput.value = removeCommas(borderLine.innerText);
     containerInput.value = removeCommas(containerWeight.innerText);
     amountInput.value = removeCommas(amount.innerText);
@@ -173,129 +227,122 @@ inventoryEditBtn.addEventListener("click", async () => {
     editBtns.style.display = "block";
     editItems.forEach(e => {
         e.parentElement.style.display = "block";
-    })
+    });
+
+    // 【修正点】マットの選択肢を作り直す(押すたびに選択肢が重複して増えていたので、最初に空にする)
+    serialSelect.innerHTML = "";
 
     // どの在庫とも接続されていないマットを取得
-    let requestData = {
+    const notConnectData = await postApi({
         action: "get_not_connected_mat"
-    };
-
-    let response = await fetch('api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
     });
 
-    const notConnectData = await response.json();
-
-    // 在庫idに紐づけられたマットidを取得
-    requestData = {
+    // 在庫idに紐づけられたマットを取得
+    const connectData = await postApi({
         action: "get_connected_mat_by_id",
         stock_id: stockId
-    }
-
-    response = await fetch('api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
     });
 
-    const connectData = await response.json();
-    let option = document.createElement("option");
-    option.value = connectData.mat.mat_id;
-    option.innerText = `(${connectData.mat.identification_id}) ${connectData.mat.serial_id}`;
-    option.selected = true;
-    serialSelect.appendChild(option);
+    // 【追加点】「未連携」の選択肢
+    const noneOption = document.createElement("option");
+    noneOption.value = "";
+    noneOption.innerText = "未連携";
+    serialSelect.appendChild(noneOption);
 
+    // 【修正点】マットが未連携でもエラーにならないようにした(以前は connectData.mat.mat_id で止まっていた)
+    if (connectData.mat) {
+        const option = document.createElement("option");
+        option.value = connectData.mat.mat_id;
+        option.innerText = connectData.mat.serial_id; // 【修正点】「(identification_id)」を削除
+        option.selected = true;
+        serialSelect.appendChild(option);
+    } else {
+        noneOption.selected = true;
+    }
+
+    // 未連携のマット
     notConnectData.mat.forEach((e) => {
-        let option = document.createElement("option");
+        const option = document.createElement("option");
         option.value = e.mat_id;
-        option.innerText = `(${e.identification_id}) ${e.serial_id}`;
-
+        option.innerText = e.serial_id; // 【修正点】「(identification_id)」を削除
         serialSelect.appendChild(option);
     });
 });
 
-const borderLineInput = document.querySelector("#border-line-input");
-const containerInput = document.querySelector("#container-input");
-const serialSelect = document.querySelector("#serial-select");
-const amountInput = document.querySelector("#amount-input");
-// まとめて非表示にするための配列
-const editItems = [
-    borderLineInput,
-    containerInput,
-    serialSelect,
-    amountInput
-];
-
-// 保存
-const editBtns = document.querySelector("#edit-btns");
-const confirmBtn = document.querySelector("#inventory-confirm-btn");
+// ===== 保存 =====
 confirmBtn.addEventListener("click", async () => {
-    let prevMatId = Number(document.querySelector("#hidden-mat-id").value);
+    const prevMatId = Number(hiddenMatId.value);
 
-    // PHPに送信(データベース編集)
-    const newBorder = borderLineInput.value;
-    const newContainerWeight = containerInput.value;
+    // 入力値を取得
+    const newBorder = borderLineInput.value.trim();
+    const newContainerWeight = containerInput.value.trim();
+    const newAmount = amountInput.value.trim();
+    const newWeight = weightInput.value.trim();
     const newMatId = serialSelect.value;
-    const newAmount = amountInput.value;
-    const requestData = {
-        action: "set_update_inventory",
-        stockId: stockId,
-        borderLine: newBorder,
-        containerWeight: newContainerWeight,
-        prevMatId: prevMatId,
-        newMatId: newMatId,
-        amount: newAmount
-    };
+    const newCategory = categorySelect.value;
 
-    const response = await fetch('api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
-    });
+    // 【追加点】数値チェック
+    const numbers = [newBorder, newContainerWeight, newAmount, newWeight];
+    if (numbers.some(v => v === "" || isNaN(Number(v)))) {
+        alert("数値を正しく入力してください。");
+        return;
+    }
 
-    // 元の情報を書き換え、再表示
-    const data = await response.json();
-    if(data.status == "success"){
-        editBtns.style.display = "none";
-        editItems.forEach(e => {
-            e.parentElement.style.display = "none";
+    // 【修正点】try/catch を追加し、通信に失敗してもエラーで止まらないようにした
+    // PHPに送信(データベース編集)
+    let data;
+    try {
+        data = await postApi({
+            action: "set_update_inventory",
+            stockId: stockId,
+            borderLine: newBorder,
+            containerWeight: newContainerWeight,
+            prevMatId: prevMatId,
+            newMatId: newMatId,
+            amount: newAmount,
+            categoryId: newCategory, // 【追加点】カテゴリーを送信
+            weight: newWeight // 【追加点】1個あたりの重さを送信
         });
+    } catch (e) {
+        alert("保存に失敗しました。");
+        return;
+    }
 
-        borderLine.innerText = formatNumberKeepDecimals(borderLineInput.value);
-        serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
-        containerWeight.innerText = formatNumberKeepDecimals(containerInput.value);
+    // 【追加点】保存に失敗した場合はメッセージを出して、画面はそのままにする
+    if (data.status !== "success") {
+        alert(data.message || "保存に失敗しました。");
+        return;
+    }
         prevMatId.innerText = newMatId;
-        amount.innerText = formatNumberKeepDecimals(newAmount);
 
-        inventoryEditBtn.style.display = "block";
-        displayItems.forEach(e => {
-            e.parentElement.style.display = "block";
-        })
-    };
+    // 元の情報を書き換える
+    borderLine.innerText = formatNumberKeepDecimals(newBorder);
+    containerWeight.innerText = formatNumberKeepDecimals(newContainerWeight);
+    amount.innerText = formatNumberKeepDecimals(newAmount);
+    weight.innerText = newWeight;
+    serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
+    categoryName.innerText = categorySelect.options[categorySelect.selectedIndex].text;
+    // 【追加点】保存したカテゴリーIDを覚えておく(次の編集やキャンセルで使う)
+    categoryName.dataset.categoryId = newCategory;
 
-    createLineChart(stockChart, selectedYear, selectedMonth.innerText, stockId);
-})
+    // 【修正点】次に保存するときの「元のマット」を、今保存したマットにしておく
+    // (以前の prevMatId.innerText = newMatId は数値への代入で効かず、2回目の保存でマットの連携が壊れていた)
+    hiddenMatId.value = newMatId;
 
-// キャンセル
-const cancelBtn =document.querySelector("#inventory-cancel-btn");
-cancelBtn.addEventListener("click", () => {
-    // 保存・キャンセルボタンを非表示
-    editBtns.style.display = "none";
-
-    // 編集用の要素を非表示
-    editItems.forEach(e => {
-        e.parentElement.style.display = "none";
-    });
-
+    // 【追加点】次回の編集で選択肢を取り直すため空にする
     serialSelect.innerHTML = "";
 
-    // 元のデータを再表示
-    displayItems.forEach(e => {
-        e.parentElement.style.display = "block";
-    });
+    // 【修正点】表示を元に戻す処理を showDisplayMode にまとめた
+    // (以前は途中でエラーが出ると、値が全部消えて編集ボタンも出なくなっていた)
+    showDisplayMode();
 
-    // 編集ボタンを再表示
-    inventoryEditBtn.style.display = "block";
+    // 基準値が変わった場合に備えてグラフを再描画
+    createLineChart(stockChart, selectedYear, selectedMonth.innerText, stockId);
+});
+
+// ===== キャンセル =====
+cancelBtn.addEventListener("click", () => {
+    // 【修正点】表示を元に戻す処理を showDisplayMode にまとめた
+    serialSelect.innerHTML = "";
+    showDisplayMode();
 });

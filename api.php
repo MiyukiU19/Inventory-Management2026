@@ -154,19 +154,21 @@ function getNotConnectedMat($pdo){
 }
 
 function setUpdateInventory($pdo, $request){
-    $stockId = $request["stockId"];
-    $prevMatId = $request["prevMatId"];
-    $newMatId = $request["newMatId"];
-    $borderLine = $request["borderLine"];
+    $stockId         = (int)$request["stockId"]; 
+    $prevMatId       = (int)$request["prevMatId"];
+    $newMatId        = (($request["newMatId"] ?? "") === "") ? null : (int)$request["newMatId"]; // 未連携を選んだら空文字が届くのでnullにする
+    $borderLine      = $request["borderLine"];
     $containerWeight = $request["containerWeight"];
-    $amount = $request["amount"];
+    $amount          = $request["amount"];
+    $weight          = $request["weight"];
+    $categoryId      = (int)$request["categoryId"];
 
     $sql = $pdo -> prepare('
         update inventory
-        set border_line = ?, container_weight = ?, amount = ?
+        set border_line = ?, container_weight = ?, amount = ?, weight = ?, category_id = ? 
         where stock_id = ?
     ');
-    $sql -> execute([$borderLine, $containerWeight, $amount, $stockId]);
+    $sql -> execute([$borderLine, $containerWeight, $amount, $weight, $categoryId, $stockId]);
 
     // 元のマットに連携されていたstock_idをnullにして新しく連携するマットにstock_idを登録する
     $sql = $pdo -> prepare("
@@ -177,12 +179,15 @@ function setUpdateInventory($pdo, $request){
     $sql -> execute([$prevMatId]);
 
     // 新しいマットにstock_idを割り振る
-    $sql = $pdo -> prepare("
-        update possess_mat
-        set stock_id = ?
-        where mat_id = ?
-    ");
-    $sql -> execute([$stockId,$newMatId]);
+    if ($newMatId !== null) {  //未連携を選んだ場合は何もしない
+            $sql = $pdo -> prepare("
+                update possess_mat
+                set stock_id = ?
+                where mat_id = ?
+            ");
+            $sql -> execute([$stockId, $newMatId]);
+        }
+
     return [
         "status" => "success"
     ];
