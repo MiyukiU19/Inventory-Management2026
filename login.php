@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
                 if ((int)$row['authority'] === 1) {
                     header('Location: menu.php');
                 } else {
-                    header('Location: inventory.php');
+                    header('Location: menu.php');
                 }
                 exit();
             } else {
