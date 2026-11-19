@@ -1,5 +1,11 @@
 <?php
 require "header.php";
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+}
+
 require "config/database.php";
 
 $stockId = $_GET['id'] ?? 0;
@@ -60,6 +66,21 @@ function formatDecimalFlexible($num) {
 
     return $trimmed;
 }
+
+function formatNumberKeepDecimals($num) {
+    // 文字列に変換して小数点で分割
+    $parts = explode('.', (string)$num);
+
+    // 整数部分のみ3桁区切りにする
+    $integerPart = number_format((float)$parts[0]);
+
+    // 小数部分があれば結合して返す
+    if (isset($parts[1])) {
+        return $integerPart . '.' . $parts[1];
+    }
+
+    return $integerPart;
+}
 ?>
 <script src="js/chart.js" defer></script>
 <script src="js/chartjs-plugin-annotation.min.js" defer></script>
@@ -82,7 +103,7 @@ function formatDecimalFlexible($num) {
                 <div>
                     <p>在庫 <?php echo $lastStockData['quantity'] ?>個</p>
                     <p><?php
-                    echo formatDecimalFlexible($lastStockData['max_weight']);
+                    echo formatNumberKeepDecimals(formatDecimalFlexible($lastStockData['max_weight']));
                     ?>kg</p>
                 </div>
                 <button type="button" id="inventory-edit-btn" class="mat-edit-button">在庫編集</button>
@@ -100,7 +121,7 @@ function formatDecimalFlexible($num) {
             <div>
                 <p>1個あたりの金額</p>
                 <div>
-                    <div id="amount"><?php echo htmlspecialchars($stockData["amount"], ENT_QUOTES, 'UTF-8'); ?></div>円
+                    <div id="amount"><?php echo formatNumberKeepDecimals(htmlspecialchars($stockData["amount"], ENT_QUOTES, 'UTF-8')); ?></div>円
                 </div>
                 <div style="display: none;"><input id="amount-input">円</div>
             </div>
@@ -129,7 +150,7 @@ function formatDecimalFlexible($num) {
             <div>
                 <p>発注基準値</p>
                 <div>
-                    <div id="border-line"><?php echo htmlspecialchars($stockData["border_line"], ENT_QUOTES, 'UTF-8'); ?></div>個
+                    <div id="border-line"><?php echo formatNumberKeepDecimals(htmlspecialchars($stockData["border_line"], ENT_QUOTES, 'UTF-8')); ?></div>個
                 </div>
 
                 <!-- 編集ボタンが押されるまで非表示 -->
@@ -139,7 +160,7 @@ function formatDecimalFlexible($num) {
                 <p>容器の重量</p>
                 <div>
                     <div id="container-weight"><?php
-                    echo formatDecimalFlexible($stockData["container_weight"]);
+                    echo formatNumberKeepDecimals(formatDecimalFlexible($stockData["container_weight"]));
                     ?></div>kg
                 </div>
 

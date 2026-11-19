@@ -89,10 +89,10 @@ async function createLineChart(canvas, year, month, stockId){
                         }
                     }
                 },
-                // 【ここを追加】基準線（アノテーション）の設定
+                // 基準線（アノテーション）の設定
                 annotation: {
                     annotations: {
-                        // 任意の名前（line1 などでOK）
+                        // 任意の名前
                         line1: {
                             type: 'line',
                             yMin: borderData.border_line, // 縦軸（Y軸）のどの位置に線を引くか（※ここを商品の基準値の数値にする）
@@ -217,14 +217,11 @@ inventoryEditBtn.addEventListener("click", async () => {
         e.parentElement.style.display = "none";
     });
 
-    // 元のデータを編集用テキストボックスに入れる
-    borderLineInput.value = borderLine.innerText;
-    containerInput.value = containerWeight.innerText;
-    amountInput.value = amount.innerText;
-    weightInput.value = weight.innerText;
-
-    // 【追加点】カテゴリーは、保存済みのカテゴリーを選択状態に戻す
+    // 元のデータを編集用テキストボックスに入れる。カテゴリーは、保存済みのカテゴリーを選択状態に戻す
     categorySelect.value = categoryName.dataset.categoryId;
+    borderLineInput.value = removeCommas(borderLine.innerText);
+    containerInput.value = removeCommas(containerWeight.innerText);
+    amountInput.value = removeCommas(amount.innerText);
 
     // 編集用のテキストボックスなどを表示する
     editBtns.style.display = "block";
@@ -316,11 +313,12 @@ confirmBtn.addEventListener("click", async () => {
         alert(data.message || "保存に失敗しました。");
         return;
     }
+        prevMatId.innerText = newMatId;
 
     // 元の情報を書き換える
-    borderLine.innerText = newBorder;
-    containerWeight.innerText = newContainerWeight;
-    amount.innerText = newAmount;
+    borderLine.innerText = formatNumberKeepDecimals(newBorder);
+    containerWeight.innerText = formatNumberKeepDecimals(newContainerWeight);
+    amount.innerText = formatNumberKeepDecimals(newAmount);
     weight.innerText = newWeight;
     serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
     categoryName.innerText = categorySelect.options[categorySelect.selectedIndex].text;

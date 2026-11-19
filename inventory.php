@@ -1,6 +1,12 @@
-<?php session_start(); ?>
-<?php require "config/database.php"; ?>
 <?php require "header.php"; ?>
+<?php
+if(empty($_SESSION['user'])){
+    echo "ログインしてください。";
+    echo "<a href='login.php'>ログイン</a>";
+    exit();
+}
+?>
+<?php require "config/database.php"; ?>
 
 <?php
 // 検索キーワードが送信されたか判定
@@ -58,6 +64,21 @@ function formatDecimalFlexible($num) {
 
     return $trimmed;
 }
+
+function formatNumberKeepDecimals($num) {
+    // 文字列に変換して小数点で分割
+    $parts = explode('.', (string)$num);
+
+    // 整数部分のみ3桁区切りにする
+    $integerPart = number_format((float)$parts[0]);
+
+    // 小数部分があれば結合して返す
+    if (isset($parts[1])) {
+        return $integerPart . '.' . $parts[1];
+    }
+
+    return $integerPart;
+}
 ?>
 
 <header class="hd_h1 inventory-header">
@@ -101,7 +122,7 @@ function formatDecimalFlexible($num) {
             ?>
             <select name="category_id" onchange="this.form.submit()" style="border: 1px solid black; border-radius:8px; padding: 4px 8px;">
                 <option value="">すべてのカテゴリ</option>
-                <?php 
+                <?php
                 foreach ($categories as $cat){
                     $selected = ($category_id === (int)$cat['category_id']) ? 'selected' : '';
                     $cat_id = htmlspecialchars($cat['category_id'], ENT_QUOTES, 'UTF-8');
@@ -113,11 +134,16 @@ function formatDecimalFlexible($num) {
         </form>
     </div>
 
-    <!-- 在庫登録ボタン -->
-    <div>
-    <button type="button" class="mat-edit-button"
-        onclick="location.href='inventory-add.php'">登録</button>
-    </div>
+    <?php
+    // 管理者のみ在庫登録ボタンを表示
+    if($_SESSION['user']['authority'] == 1){
+        echo '<!-- 在庫登録ボタン -->';
+        echo '<div>';
+        echo '<button type="button" class="mat-edit-button"';
+        echo 'onclick=', "location.href='inventory-add.php'", '>登録</button>';
+        echo '</div>';
+    }
+    ?>
 </div>
 
 
@@ -160,11 +186,16 @@ $totalAmount = $stockData['quantity'] * $stockData['amount'];
 // 総重量の末尾の0を調整
 $maxWeight = formatDecimalFlexible($stockData['max_weight']);
 
+// 3桁ごとにカンマを付ける
+$formatQuantity = formatNumberKeepDecimals($stockData['quantity']);
+$formatMaxWeight = formatNumberKeepDecimals($maxWeight);
+$formatTotalAmount = formatNumberKeepDecimals($totalAmount);
+
 // 2行目：在庫・総重量・合計金額
 echo "<div class='inventory-details'>";
-echo "<span class='inventory-detail'>在庫：{$stockData['quantity']}個</span>";
-echo "<span class='inventory-detail'>総重量：{$maxWeight}kg</span>";
-echo "<span class='inventory-detail'>合計：{$totalAmount}円</span>";
+echo "<span class='inventory-detail'>在庫：{$formatQuantity}個</span>";
+echo "<span class='inventory-detail'>総重量：{$formatMaxWeight}kg</span>";
+echo "<span class='inventory-detail'>合計：{$formatTotalAmount}円</span>";
 echo "</div>";
 
 echo "</div>";

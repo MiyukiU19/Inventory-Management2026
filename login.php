@@ -1,8 +1,9 @@
-<?php session_start(); ?>
+<?php require "header.php"; ?>
 <?php require "config/database.php"; ?>
 <?php
-$error_message = "";
+$_SESSION['user'] = null; // このページにアクセスしたら自動的にログアウトする。
 
+$error_message = "";
 // ログインボタンが押された場合の処理
 if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
     $user_name = $_POST['user-name'] ?? ''; //送られてきたデータを代入
@@ -51,9 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") { //送信方式がPOSTか判定
 </header>
 
 <main class="login-page">
-
-    
-
     <form action="" class="login_form" method="post">
 
         <p>
