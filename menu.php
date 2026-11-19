@@ -7,7 +7,6 @@ if(empty($_SESSION['user'])){
 }
 ?>
 <header>
-
     <h1 class="hd_h1" >メニュー</h1>
 </header>
 <main>
@@ -34,4 +33,7 @@ if(empty($_SESSION['user'])){
         ?>
     </div>
 </main>
+<div>
+    <a href="login.php">ログアウト</a>
+</div>
 <?php require "footer.php"; ?>
