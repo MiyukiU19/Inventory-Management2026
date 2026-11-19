@@ -170,7 +170,7 @@ inventoryEditBtn.addEventListener("click", async () => {
     amountInput.value = removeCommas(amount.innerText);
 
     // 編集用のテキストボックスなどを表示する
-    editBtns.style.display = "block";
+    editBtns.style.display = "flex";
     editItems.forEach(e => {
         e.parentElement.style.display = "block";
     })
