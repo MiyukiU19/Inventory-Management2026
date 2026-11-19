@@ -13,16 +13,17 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS possess_mat;
 DROP TABLE IF EXISTS inventory_history;
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS mat_specification;
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS category;
 
 -- ==========================================
 -- 2. テーブルの作成
 -- ==========================================
--- ユーザーテーブル
+-- ユーザーテーブル (uniform_number を追加)
 CREATE TABLE user (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
+    uniform_number INT NOT NULL UNIQUE,
     user_name VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
     authority BOOLEAN NOT NULL
@@ -35,26 +36,26 @@ CREATE TABLE mat_specification (
     measurement_unit INT NOT NULL
 );
 
--- カテゴリーテーブル
+-- カテゴリテーブル
 CREATE TABLE category (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(100) NOT NULL
+    category_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    category_name VARCHAR(10) NOT NULL
 );
 
 -- 在庫テーブル
 CREATE TABLE inventory (
     stock_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
     stock_name VARCHAR(100) NOT NULL,
     amount INT NOT NULL,
     border_line INT NOT NULL,
     weight DECIMAL(10,3) NOT NULL,
     container_weight DECIMAL(10,3) NOT NULL,
     img VARCHAR(255) NOT NULL,
-    category_id INT NOT NULL,
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 
--- 所有マットテーブル (identification_idに NOT NULL と UNIQUE 制約を設定)
+-- 所有マットテーブル
 CREATE TABLE possess_mat (
     mat_id INT AUTO_INCREMENT PRIMARY KEY,
     serial_id CHAR(12) NOT NULL UNIQUE,
@@ -85,64 +86,79 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 3. テストデータの挿入
 -- ==========================================
 
--- 0. ユーザー (25件)
-INSERT INTO user (user_id, user_name, password, authority) VALUES
-(NULL, '佐藤 健太', 'sato_ken01', TRUE), (NULL, '鈴木 さくら', 'suzuki_s99', FALSE),
-(NULL, '高橋 大輔', 'takahashi_d', TRUE), (NULL, '田中 美咲', 'tanaka1234', FALSE),
-(NULL, '伊藤 翔太', 'ito_shota5', TRUE), (NULL, '渡辺 結衣', 'watanabe_y', FALSE),
-(NULL, '山本 浩二', 'yamamoto55', TRUE), (NULL, '中村 葵', 'nakamura08', FALSE),
-(NULL, '小林 拓海', 'koba_taku', TRUE), (NULL, '加藤 陽菜', 'kato_hina', FALSE),
-(NULL, '吉田 陸', 'yoshida_r', TRUE), (NULL, '山田 花子', 'yamada875', FALSE),
-(NULL, '佐々木 蓮', 'sasaki_ren', TRUE), (NULL, '山口 凛', 'yamaguchi_r', FALSE),
-(NULL, '松本 颯太', 'matsu_sota', TRUE), (NULL, '井上 結愛', 'inoue_yua', FALSE),
-(NULL, '木村 樹', 'kimura_i', TRUE), (NULL, '林 さな', 'hayashi_s', FALSE),
-(NULL, '斎藤 悠真', 'saito_yuma', TRUE), (NULL, '清水 美海', 'shimizu_m', FALSE),
-(NULL, '山崎 蒼空', 'yamazaki_s', TRUE), (NULL, '森 あかり', 'mori_akari', FALSE),
-(NULL, '池田 涼平', 'ikeda_ryo', TRUE), (NULL, '橋本 真由', 'hashimoto_m', FALSE),
-(NULL, '阿部 健太郎', 'abe_ken33', TRUE);
+-- 0. ユーザー (25件) ※uniform_numberを追加
+INSERT INTO user (user_id, uniform_number, user_name, password, authority) VALUES
+(NULL, 1, '佐藤 健太', 'sato_ken01', TRUE),
+(NULL, 2, '鈴木 さくら', 'suzuki_s99', FALSE),
+(NULL, 3, '高橋 大輔', 'takahashi_d', TRUE),
+(NULL, 4, '田中 美咲', 'tanaka1234', FALSE),
+(NULL, 5, '伊藤 翔太', 'ito_shota5', TRUE),
+(NULL, 6, '渡辺 結衣', 'watanabe_y', FALSE),
+(NULL, 7, '山本 浩二', 'yamamoto55', TRUE),
+(NULL, 8, '中村 葵', 'nakamura08', FALSE),
+(NULL, 9, '小林 拓海', 'koba_taku', TRUE),
+(NULL, 10, '加藤 陽菜', 'kato_hina', FALSE),
+(NULL, 11, '吉田 陸', 'yoshida_r', TRUE),
+(NULL, 12, '山田 花子', 'yamada875', FALSE),
+(NULL, 13, '佐々木 蓮', 'sasaki_ren', TRUE),
+(NULL, 14, '山口 凛', 'yamaguchi_r', FALSE),
+(NULL, 15, '松本 颯太', 'matsu_sota', TRUE),
+(NULL, 16, '井上 結愛', 'inoue_yua', FALSE),
+(NULL, 17, '木村 樹', 'kimura_i', TRUE),
+(NULL, 18, '林 さな', 'hayashi_s', FALSE),
+(NULL, 19, '斎藤 悠真', 'saito_yuma', TRUE),
+(NULL, 20, '清水 美海', 'shimizu_m', FALSE),
+(NULL, 21, '山崎 蒼空', 'yamazaki_s', TRUE),
+(NULL, 22, '森 あかり', 'mori_akari', FALSE),
+(NULL, 23, '池田 涼平', 'ikeda_ryo', TRUE),
+(NULL, 24, '橋本 真由', 'hashimoto_m', FALSE),
+(NULL, 25, '阿部 健太郎', 'abe_ken33', TRUE);
 
 -- 1. マット仕様 (4件)
 INSERT INTO mat_specification (mat_spec_id, load_capacity, measurement_unit) VALUES
 (1, 1000, 1), (2, 5000, 10), (3, 10000, 50), (4, 20000, 100);
 
--- 2. カテゴリー (4件)
+-- 2. カテゴリ (4件)
 INSERT INTO category (category_id, category_name) VALUES
-(01, '鋼材'), (02, '小物'), (03, '中国'), (04, 'その他');
+(1, '鋼材'),
+(2, '小物'),
+(3, '中国'),
+(4, 'その他');
 
 -- 3. 在庫 (30件)
-INSERT INTO inventory (stock_id, stock_name, amount, border_line, weight, container_weight, img, category_id) VALUES
-(1, 'M2×10 なべ小ねじ', 10, 1000, 0.350, 0.150, 'screw_m2.png', 02),
-(2, 'M3×15 六角穴付きボルト', 15, 500, 1.200, 0.200, 'bolt_m3.png', 02),
-(3, 'M4 六角ナット', 5, 1000, 0.800, 0.100, 'nut_m4.png', 02),
-(4, 'SUS304 平ワッシャー M4用', 8, 2000, 0.250, 0.120, 'washer_m4.png', 02),
-(5, '深溝玉軸受 6200ZZ', 350, 50, 32.000, 1.500, 'bearing_6200.png', 02),
-(6, 'リニアガイド HSR15', 2500, 20, 450.000, 2.100, 'linear_guide.png', 02),
-(7, 'アルミフレーム 2020 (1000mm)', 800, 30, 480.000, 0.800, 'alum_2020.png', 02),
-(8, 'アルミフレーム 4040 (1000mm)', 1800, 15, 1600.000, 1.200, 'alum_4040.png', 02),
-(9, 'L字ブラケット 2020用', 120, 100, 15.500, 0.500, 'bracket_20.png', 02),
-(10, 'Tナット M5', 30, 500, 3.100, 0.300, 'tnut_m5.png', 02),
-(11, 'ステッピングモーター NEMA17', 1500, 25, 280.000, 0.600, 'motor_nema17.png', 01),
-(12, 'サーボモーター SG90', 400, 50, 9.000, 0.250, 'servo_sg90.png', 01),
-(13, 'タイミングベルト GT2 幅6mm', 200, 10, 12.000, 0.100, 'belt_gt2.png', 01),
-(14, 'タイミングプーリー 20歯', 350, 40, 6.500, 0.150, 'pulley_20t.png', 01),
-(15, 'カップリング 5×8mm', 600, 30, 18.000, 0.400, 'coupling.png', 02),
-(16, 'Oリング P-10', 40, 200, 0.150, 0.050, 'oring_p10.png', 02),
-(17, '結束バンド 100mm 白', 5, 50, 0.300, 0.100, 'cable_tie.png', 02),
-(18, '熱収縮チューブ Φ3.0', 80, 20, 2.500, 0.200, 'tube_3.png', 04),
-(19, 'プリント基板 ユニバーサル', 250, 40, 25.000, 0.350, 'pcb_uni.png', 04),
-(20, '抵抗器 1kΩ 1/4W', 1, 1000, 0.200, 0.080, 'resistor_1k.png', 04),
-(21, '電解コンデンサ 100μF', 20, 500, 1.500, 0.120, 'capacitor_100.png', 04),
-(22, 'LED 5mm 赤', 15, 300, 0.300, 0.050, 'led_red.png', 02),
-(23, 'トグルスイッチ 2極', 180, 50, 12.000, 0.300, 'switch_toggle.png', 03),
-(24, 'リミットスイッチ', 320, 80, 8.500, 0.250, 'switch_limit.png', 03),
-(25, 'VVFケーブル 1.6mm 2心', 1200, 5, 115.000, 1.800, 'cable_vvf.png', 04),
-(26, '圧着端子 R2-4', 12, 400, 0.700, 0.200, 'terminal_r2.png', 04),
-(27, '絶縁テープ 黒', 150, 30, 45.000, 0.150, 'tape_insulation.png', 04),
-(28, 'シリコングリス', 850, 15, 20.000, 0.400, 'grease.png', 04),
-(29, 'ねじロック剤', 600, 10, 50.000, 0.300, 'threadlocker.png', 04),
-(30, 'ウレタンゴムシート 3mm', 950, 25, 320.000, 2.500, 'rubber_sheet.png', 04);
+INSERT INTO inventory (stock_id, category_id, stock_name, amount, border_line, weight, container_weight, img) VALUES
+(1,  2, 'M2×10 なべ小ねじ', 10, 1000, 0.350, 0.150, 'screw_m2.png'),
+(2,  2, 'M3×15 六角穴付きボルト', 15, 500, 1.200, 0.200, 'bolt_m3.png'),
+(3,  2, 'M4 六角ナット', 5, 1000, 0.800, 0.100, 'nut_m4.png'),
+(4,  2, 'SUS304 平ワッシャー M4用', 8, 2000, 0.250, 0.120, 'washer_m4.png'),
+(5,  2, '深溝玉軸受 6200ZZ', 350, 50, 32.000, 1.500, 'bearing_6200.png'),
+(6,  1, 'リニアガイド HSR15', 2500, 20, 450.000, 2.100, 'linear_guide.png'),
+(7,  1, 'アルミフレーム 2020 (1000mm)', 800, 30, 480.000, 0.800, 'alum_2020.png'),
+(8,  1, 'アルミフレーム 4040 (1000mm)', 1800, 15, 1600.000, 1.200, 'alum_4040.png'),
+(9,  1, 'L字ブラケット 2020用', 120, 100, 15.500, 0.500, 'bracket_20.png'),
+(10, 2, 'Tナット M5', 30, 500, 3.100, 0.300, 'tnut_m5.png'),
+(11, 3, 'ステッピングモーター NEMA17', 1500, 25, 280.000, 0.600, 'motor_nema17.png'),
+(12, 3, 'サーボモーター SG90', 400, 50, 9.000, 0.250, 'servo_sg90.png'),
+(13, 3, 'タイミングベルト GT2 幅6mm', 200, 10, 12.000, 0.100, 'belt_gt2.png'),
+(14, 3, 'タイミングプーリー 20歯', 350, 40, 6.500, 0.150, 'pulley_20t.png'),
+(15, 1, 'カップリング 5×8mm', 600, 30, 18.000, 0.400, 'coupling.png'),
+(16, 2, 'Oリング P-10', 40, 200, 0.150, 0.050, 'oring_p10.png'),
+(17, 2, '結束バンド 100mm 白', 5, 50, 0.300, 0.100, 'cable_tie.png'),
+(18, 4, '熱収縮チューブ Φ3.0', 80, 20, 2.500, 0.200, 'tube_3.png'),
+(19, 3, 'プリント基板 ユニバーサル', 250, 40, 25.000, 0.350, 'pcb_uni.png'),
+(20, 3, '抵抗器 1kΩ 1/4W', 1, 1000, 0.200, 0.080, 'resistor_1k.png'),
+(21, 3, '電解コンデンサ 100μF', 20, 500, 1.500, 0.120, 'capacitor_100.png'),
+(22, 3, 'LED 5mm 赤', 15, 300, 0.300, 0.050, 'led_red.png'),
+(23, 3, 'トグルスイッチ 2極', 180, 50, 12.000, 0.300, 'switch_toggle.png'),
+(24, 3, 'リミットスイッチ', 320, 80, 8.500, 0.250, 'switch_limit.png'),
+(25, 4, 'VVFケーブル 1.6mm 2心', 1200, 5, 115.000, 1.800, 'cable_vvf.png'),
+(26, 2, '圧着端子 R2-4', 12, 400, 0.700, 0.200, 'terminal_r2.png'),
+(27, 4, '絶縁テープ 黒', 150, 30, 45.000, 0.150, 'tape_insulation.png'),
+(28, 4, 'シリコングリス', 850, 15, 20.000, 0.400, 'grease.png'),
+(29, 4, 'ねじロック剤', 600, 10, 50.000, 0.300, 'threadlocker.png'),
+(30, 4, 'ウレタンゴムシート 3mm', 950, 25, 320.000, 2.500, 'rubber_sheet.png');
 
--- 3. 所有マット (30件) ※identification_idを1〜30に設定
+-- 4. 所有マット (30件)
 INSERT INTO possess_mat (mat_id, serial_id, identification_id, stock_id, mat_spec_id) VALUES
 (1, 'W93847102934', 1, 1, 1),     (2, 'W18475920384', 2, 2, 2),     (3, 'W82736450192', 3, 3, 1),
 (4, 'W39485710293', 4, 4, 3),     (5, 'W58291037465', 5, 5, 1),     (6, 'W10394857621', 6, NULL, 1), 
