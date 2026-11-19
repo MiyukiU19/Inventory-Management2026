@@ -1325,3 +1325,41 @@ font-weight: 600;
     accent-color: #007bff;
     cursor: pointer;
 }
+/* 在庫詳細：保存・キャンセルボタン */
+#edit-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+#edit-btns button {
+    width: 75px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 保存ボタン */
+#inventory-confirm-btn {
+    background-color: #60a5fa;
+    color: white;
+}
+
+/* キャンセルボタン */
+#inventory-cancel-btn {
+    background-color:#ccc ;
+    color: white;
+    
+
+}
+
+#edit-btns button:hover {
+    opacity: 0.8;
+}
