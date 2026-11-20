@@ -39,26 +39,33 @@ if (empty($user_id)) {
 // 2. 更新ボタン（POST）が押されたときの処理
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // 送られてきたデータをそれぞれ変数に代入
+    $uniform_number = trim($_POST['uniform_number'] ?? '');
     $user_name = $_POST['user_name'] ?? '';
     $password = $_POST['password'] ?? '';
     $authority = $_POST['authority'] ?? '';
 
-    if (!empty($user_name) && !empty($password) && $authority !== '') { //それぞれ空になってないか
+    if ($uniform_number !== '' && ctype_digit($uniform_number) && !empty($user_name) && !empty($password) && $authority !== '') { //それぞれ空になってないか
         try {
             // データベースの情報を更新
-            $sql = $pdo->prepare("UPDATE user SET user_name = ?, password = ?, authority = ? WHERE user_id = ?");
+            $sql = $pdo->prepare("UPDATE user SET uniform_number = ?, user_name = ?, password = ?, authority = ? WHERE user_id = ?");
             // 用意した?の部分に入力したものを当てはめて、データベースの情報を更新する
-            $sql->execute([$user_name, $password, $authority, $user_id]);
+            $sql->execute([$uniform_number, $user_name, $password, $authority, $user_id]);
 
             // 更新成功したらadmin.phpへ移動する
             header('Location: admin.php');
             exit();
             
         } catch (Throwable $e) {
-            $error_message = "更新エラーが発生しました: " . $e->getMessage();
+            // 【追加点】背番号が他のユーザーと重複している場合(UNIQUE制約のエラー 1062)は、分かりやすいメッセージにする
+            if ($e instanceof PDOException && ($e->errorInfo[1] ?? null) == 1062) {
+                $error_message = "この背番号はすでに使われています。";
+            } else {
+                $error_message = "更新エラーが発生しました: " . $e->getMessage();
+            }
         }
     } else {
-        $error_message = "すべての項目を入力してください。";
+        // 【修正点】背番号は半角数字で入力することも案内する
+        $error_message = "すべての項目を入力してください。背番号は半角数字で入力してください。";
     }
 }
 
@@ -97,6 +104,9 @@ try {
 <?php endif; ?>
 
 <form id="user-edit-form" class="mat-add-form"  action="" method="post">
+    <div>
+        <p>背番号</p>
+        <input type="text" name="uniform_number" inputmode="numeric" pattern="[0-9]+" value="<?php echo htmlspecialchars($user['uniform_number'], ENT_QUOTES, 'UTF-8'); ?>" required>    </div>
     <div>
         <p>ユーザー名</p>
         <input type="text" name="user_name" value="<?php echo htmlspecialchars($user['user_name'], ENT_QUOTES, 'UTF-8'); ?>" required>
