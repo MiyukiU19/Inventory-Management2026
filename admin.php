@@ -42,6 +42,7 @@ if(empty($_SESSION['user'])){
         <thead>
             <tr>
                 <th>権限</th>
+                <th>背番号</th>
                 <th>ユーザー名</th>
                 <th></th>
             </tr>
@@ -62,6 +63,10 @@ if(empty($_SESSION['user'])){
                 echo "'>";
                 echo $authority_text;
                 echo "</span>";
+                echo "</td>";
+
+                echo "<td>";
+                echo htmlspecialchars($row['uniform_number'], ENT_QUOTES, 'UTF-8');
                 echo "</td>";
 
                 echo "<td>";

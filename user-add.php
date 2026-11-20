@@ -29,14 +29,15 @@ $error_message = "";
 //  登録ボタン（POST）が押されたときの処理
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // 送られてきたデータをそれぞれ変数に代入
+    $uniform_number = trim($_POST['uniform_number'] ?? '');
     $user_name = $_POST['user_name'] ?? '';
     $password = $_POST['password'] ?? '';
     $authority = $_POST['authority'] ?? '';
-
-    if (!empty($user_name) && !empty($password) && $authority !== '') { //それぞれ空になってないか
+// それぞれ空になってないか
+    if ($uniform_number !== '' && ctype_digit($uniform_number) && !empty($user_name) && !empty($password) && $authority !== '') { //ctype_digit()：文字列が0~9で構成されているか判定
         try {
             // データベースに新しいユーザー情報を追加
-            $sql = $pdo->prepare("insert into user (user_name, password, authority) values (?, ?, ?)");
+            $sql = $pdo->prepare("insert into user (uniform_number, user_name, password, authority) values (?, ?, ?)");
             $sql->execute([$user_name, $password, $authority]);
 
             // 登録成功したらadmin.phpへリダイレクト
@@ -44,10 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit();
             
         } catch (Throwable $e) {
-            $error_message = "登録エラーが発生しました: " . $e->getMessage();
+            if ($e instanceof PDOException && ($e->errorInfo[1] ?? null) == 1062) {
+                $error_message = "この背番号はすでに使われています。";
+            } else {
+                $error_message = "登録エラーが発生しました: " . $e->getMessage();
+            }
         }
     } else {
-        $error_message = "すべての項目を入力してください。";
+        $error_message = "すべての項目を入力してください。背番号は半角数字で入力してください。";
     }
 }
 ?>
@@ -63,6 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php endif; ?>
 
 <form action="" method="post" class="mat-add-form user-add-form" id="user-add-form">
+    <div>
+        <p>背番号</p>
+        <input type="text" name="uniform_number" inputmode="numeric" pattern="[0-9]+" required>
+    </div>
     <div>
         <p>ユーザー名</p>
         <input type="text" name="user_name" required>
