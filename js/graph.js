@@ -117,7 +117,7 @@ async function createChart() {
             // 【変更】scales（目盛り）の設定に title を追加します
             scales: {
                 y: {
-                    beginAtZero: true,
+                    beginAtZero: true
                 }
             }
         }
@@ -131,15 +131,73 @@ stockSelect.addEventListener("change", () => {
     createChart();
 })
 
+const placeholderText = 'グラフに表示する商品を選択してください';
+
 const choices = new Choices(stockSelect, {
-    removeItemButton: true,  // 選択した項目に「×」ボタンを表示
-    searchEnabled: true,     // 検索ボックスを表示する
+    removeItemButton: true,
+    searchEnabled: true,
     placeholder: true,
-    placeholderValue: 'グラフに表示する商品を選択してください'
+    placeholderValue: placeholderText,
 });
 
-// 【修正点】 selectElementではなく、Choicesインスタンスから直接コンテナ要素を取得します
 const choicesContainer = choices.containerOuter.element;
+
+function resetInputWidth(input) {
+    // Choicesが独自に付与しているインラインの幅指定をクリアして、文字が見切れないようにする
+    input.style.width = '';
+    input.style.minWidth = '';
+    input.style.maxWidth = '100%';
+}
+
+function updatePlaceholder() {
+    const selectedValues = choices.getValue(true);
+    const hasSelection = Array.isArray(selectedValues)
+        ? selectedValues.length > 0
+        : Boolean(selectedValues);
+
+    const inputs = choicesContainer.querySelectorAll('input');
+    inputs.forEach((input) => {
+        if (hasSelection) {
+        input.placeholder = '';
+        input.removeAttribute('placeholder');
+        input.style.width = '';
+        input.style.minWidth = '';
+        } else {
+        input.placeholder = placeholderText;
+        input.setAttribute('placeholder', placeholderText);
+        input.style.width = '100%';
+        input.style.minWidth = '0';
+        input.style.maxWidth = '100%';
+        input.style.boxSizing = 'border-box';
+        }
+    });
+}
+
+stockSelect.addEventListener('change', () => requestAnimationFrame(updatePlaceholder));
+stockSelect.addEventListener('addItem', () => requestAnimationFrame(updatePlaceholder));
+stockSelect.addEventListener('removeItem', () => requestAnimationFrame(updatePlaceholder));
+stockSelect.addEventListener('search', () => requestAnimationFrame(updatePlaceholder));
+
+choicesContainer.addEventListener('click', () => {
+    requestAnimationFrame(updatePlaceholder);
+});
+
+let isUpdating = false;
+const observer = new MutationObserver(() => {
+    if (isUpdating) return;
+    isUpdating = true;
+    requestAnimationFrame(() => {
+        updatePlaceholder();
+        isUpdating = false;
+    });
+});
+
+observer.observe(choicesContainer, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['placeholder', 'style'],
+});
 
 // mousedownイベントで検知
 choicesContainer.addEventListener('mousedown', function(event) {

@@ -1,4 +1,4 @@
-// 【追加点】api.php にJSONをPOSTして結果を返す共通関数(同じfetchの繰り返しをまとめた)
+// api.php にJSONをPOSTして結果を返す共通関数(同じfetchの繰り返しをまとめた)
 async function postApi(data) {
     const response = await fetch('api.php', {
         method: 'POST',
@@ -154,7 +154,6 @@ nextMonthBtn.addEventListener("click", () => {
 
 
 // ===== 編集用要素の定義 =====
-// 【修正点】編集用の要素(Input類)の定義を、使う前の位置にまとめた
 // 表示用(普段見えている方)
 const borderLine = document.querySelector("#border-line");
 const containerWeight = document.querySelector("#container-weight");
@@ -193,10 +192,10 @@ const editItems = [
 const editBtns = document.querySelector("#edit-btns");
 const confirmBtn = document.querySelector("#inventory-confirm-btn");
 const cancelBtn = document.querySelector("#inventory-cancel-btn");
-// 【追加点】保存後に更新するため、マットIDの要素を定義
+// 保存後に更新するため、マットIDの要素を定義
 const hiddenMatId = document.querySelector("#hidden-mat-id");
 
-// 【追加点】表示モードにする(編集用を隠して、表示用を出す)。保存とキャンセルで共通して使う
+// 表示モードにする(編集用を隠して、表示用を出す)。保存とキャンセルで共通して使う
 function showDisplayMode() {
     editBtns.style.display = "none";
     editItems.forEach(e => {
@@ -222,6 +221,7 @@ inventoryEditBtn.addEventListener("click", async () => {
     borderLineInput.value = removeCommas(borderLine.innerText);
     containerInput.value = removeCommas(containerWeight.innerText);
     amountInput.value = removeCommas(amount.innerText);
+    weightInput.value = removeCommas(weight.innerText);
 
     // 編集用のテキストボックスなどを表示する
     editBtns.style.display = "flex";
@@ -229,7 +229,7 @@ inventoryEditBtn.addEventListener("click", async () => {
         e.parentElement.style.display = "block";
     });
 
-    // 【修正点】マットの選択肢を作り直す(押すたびに選択肢が重複して増えていたので、最初に空にする)
+    // マットの選択肢を作り直す(押すたびに選択肢が重複して増えていたので、最初に空にする)
     serialSelect.innerHTML = "";
 
     // どの在庫とも接続されていないマットを取得
@@ -243,17 +243,17 @@ inventoryEditBtn.addEventListener("click", async () => {
         stock_id: stockId
     });
 
-    // 【追加点】「未連携」の選択肢
+    // 「未連携」の選択肢
     const noneOption = document.createElement("option");
     noneOption.value = "";
     noneOption.innerText = "未連携";
     serialSelect.appendChild(noneOption);
 
-    // 【修正点】マットが未連携でもエラーにならないようにした(以前は connectData.mat.mat_id で止まっていた)
+    // マットが未連携でもエラーにならないようにした(以前は connectData.mat.mat_id で止まっていた)
     if (connectData.mat) {
         const option = document.createElement("option");
         option.value = connectData.mat.mat_id;
-        option.innerText = connectData.mat.serial_id; // 【修正点】「(identification_id)」を削除
+        option.innerText = connectData.mat.serial_id; // 「(identification_id)」を削除
         option.selected = true;
         serialSelect.appendChild(option);
     } else {
@@ -264,7 +264,7 @@ inventoryEditBtn.addEventListener("click", async () => {
     notConnectData.mat.forEach((e) => {
         const option = document.createElement("option");
         option.value = e.mat_id;
-        option.innerText = e.serial_id; // 【修正点】「(identification_id)」を削除
+        option.innerText = e.serial_id; // 「(identification_id)」を削除
         serialSelect.appendChild(option);
     });
 });
@@ -281,14 +281,14 @@ confirmBtn.addEventListener("click", async () => {
     const newMatId = serialSelect.value;
     const newCategory = categorySelect.value;
 
-    // 【追加点】数値チェック
+    // 数値チェック
     const numbers = [newBorder, newContainerWeight, newAmount, newWeight];
     if (numbers.some(v => v === "" || isNaN(Number(v)))) {
         alert("数値を正しく入力してください。");
         return;
     }
 
-    // 【修正点】try/catch を追加し、通信に失敗してもエラーで止まらないようにした
+    // try/catch を追加し、通信に失敗してもエラーで止まらないようにした
     // PHPに送信(データベース編集)
     let data;
     try {
@@ -300,20 +300,20 @@ confirmBtn.addEventListener("click", async () => {
             prevMatId: prevMatId,
             newMatId: newMatId,
             amount: newAmount,
-            categoryId: newCategory, // 【追加点】カテゴリーを送信
-            weight: newWeight // 【追加点】1個あたりの重さを送信
+            categoryId: newCategory, // カテゴリーを送信
+            weight: newWeight // 1個あたりの重さを送信
         });
     } catch (e) {
         alert("保存に失敗しました。");
         return;
     }
 
-    // 【追加点】保存に失敗した場合はメッセージを出して、画面はそのままにする
+    // 保存に失敗した場合はメッセージを出して、画面はそのままにする
     if (data.status !== "success") {
         alert(data.message || "保存に失敗しました。");
         return;
     }
-        prevMatId.innerText = newMatId;
+    prevMatId.innerText = newMatId;
 
     // 元の情報を書き換える
     borderLine.innerText = formatNumberKeepDecimals(newBorder);
@@ -322,18 +322,16 @@ confirmBtn.addEventListener("click", async () => {
     weight.innerText = newWeight;
     serialId.innerText = serialSelect.options[serialSelect.selectedIndex].text;
     categoryName.innerText = categorySelect.options[categorySelect.selectedIndex].text;
-    // 【追加点】保存したカテゴリーIDを覚えておく(次の編集やキャンセルで使う)
+    // 保存したカテゴリーIDを覚えておく(次の編集やキャンセルで使う)
     categoryName.dataset.categoryId = newCategory;
 
-    // 【修正点】次に保存するときの「元のマット」を、今保存したマットにしておく
-    // (以前の prevMatId.innerText = newMatId は数値への代入で効かず、2回目の保存でマットの連携が壊れていた)
+    // 次に保存するときの「元のマット」を、今保存したマットにしておく
     hiddenMatId.value = newMatId;
 
-    // 【追加点】次回の編集で選択肢を取り直すため空にする
+    // 次回の編集で選択肢を取り直すため空にする
     serialSelect.innerHTML = "";
 
-    // 【修正点】表示を元に戻す処理を showDisplayMode にまとめた
-    // (以前は途中でエラーが出ると、値が全部消えて編集ボタンも出なくなっていた)
+    // 表示を元に戻す処理を showDisplayMode にまとめた
     showDisplayMode();
 
     // 基準値が変わった場合に備えてグラフを再描画
@@ -342,7 +340,6 @@ confirmBtn.addEventListener("click", async () => {
 
 // ===== キャンセル =====
 cancelBtn.addEventListener("click", () => {
-    // 【修正点】表示を元に戻す処理を showDisplayMode にまとめた
     serialSelect.innerHTML = "";
     showDisplayMode();
 });

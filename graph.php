@@ -36,29 +36,23 @@ if(empty($_SESSION['user'])){
         <p>期間</p>
         <select id="chart-period">
             <?php
-            // 2026年11月から現在の月まで選択肢を作成する
-            $currentYear = 2023;  // 開始年
-            $currentMonth = 10;   // 開始月
-            $endYear = (int)date('Y'); // 現在の年
-            $endMonth = (int)date('n'); // 現在の月
+            $year = (int)date('Y');  // 画面表示時の年（ここから遡る）
+            $month = (int)date('n'); // 画面表示時の月（ここから遡る）
+            $minYear = 2023;         // 下限の年
+            $minMonth = 10;          // 下限の月
 
-            // 「現在の年が終了年より小さい」または「同じ年だけど月が終了月以下」の間ループし続ける
-            while (($currentYear < $endYear) || ($currentYear == $endYear && $currentMonth <= $endMonth)) {
-                // sprintfで2桁空白埋めし、できた空白をHTML用の '&nbsp;' に置き換える
-                $displayMonth = str_replace(' ', '&nbsp;', sprintf("%2d", $currentMonth)); // <- うまくいっていないので、可能ならCSSで調整してほしいです。
+            // 現在の年月が、下限（2026年11月）以上の間ループし続ける
+            while (($year > $minYear) || ($year == $minYear && $month >= $minMonth)) {
+                $displayMonth = str_replace(' ', ' ', sprintf("%2d", $month));
+                echo "<option>{$year}年 {$displayMonth}月</option>\n";
 
-                // optionタグの出力
-                echo "<option value='{$currentYear} {$currentMonth}'>";
-                echo "{$currentYear}年 {$displayMonth}月";
-                echo "</option>\n";
+                // 月を1つ戻す
+                $month--;
 
-                // 月を1つ進める
-                $currentMonth++;
-
-                // もし12月を超えたら、翌年の1月にする
-                if ($currentMonth > 12) {
-                    $currentMonth = 1;
-                    $currentYear++;
+                // 1月より前になったら、前年の12月にする
+                if ($month < 1) {
+                    $month = 12;
+                    $year--;
                 }
             }
             ?>
