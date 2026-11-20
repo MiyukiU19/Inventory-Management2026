@@ -30,10 +30,12 @@ if(empty($_SESSION['user'])){
             echo '<h4>マット管理</h4>';
             echo '</a>';
         }
-        ?>
+                ?>
+
+        <a href="login.php" class="mat-edit-button menu-logout">
+            ログアウト
+        </a>
+
     </div>
 </main>
-<div>
-    <a href="login.php">ログアウト</a>
-</div>
 <?php require "footer.php"; ?>

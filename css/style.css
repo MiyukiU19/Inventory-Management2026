@@ -1363,3 +1363,11 @@ font-weight: 600;
 #edit-btns button:hover {
     opacity: 0.8;
 }
+/* メニュー：ログアウトボタン */
+.menu .menu-logout {
+    grid-column: 2;
+    justify-self: end;
+    white-space: nowrap;
+    background-color: #ccc;
+    color: black;
+}
